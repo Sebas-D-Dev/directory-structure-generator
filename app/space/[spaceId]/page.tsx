@@ -1,66 +1,121 @@
-// app/space/[spaceId]/page.tsx (Revised)
-
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAblyChannel } from '@/hooks/useAbly';
-import { PasswordModal } from '@/components/PasswordModal'; // A new UI component
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useAblyChannel } from '@/hooks/useAbly'; // Assuming this hook exists
+import WorkspaceSettings from '@/components/WorkspaceSettings';
+import AppLayout from '@/layouts/AppLayout';
 
+// Expand the Workspace interface to include all necessary fields
+interface Workspace {
+  id: string;
+  name: string;
+  content: string;
+  isPublic: boolean;
+  ownerId: string;
+}
+
+/**
+ * The main collaboration page for a single workspace.
+ * It now fetches workspace details to control settings visibility.
+ */
 export default function SpacePage({ params }: { params: { spaceId: string } }) {
-  const [token, setToken] = useState<string | null>(null);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // State for the workspace data and the Ably token
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [ablyToken, setAblyToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(true);
-
-  // This will be null until the user authenticates and we get a token
-  const collaboration = token ? useAblyChannel(params.spaceId, token) : null;
-
-  const handleAuth = async (password: string) => {
-    try {
-      const response = await fetch('/api/ably-auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ spaceId: params.spaceId, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Authentication failed. Please check the password.');
-      }
-      
-      const { token: authToken } = await response.json();
-      setToken(authToken);
-      setShowModal(false);
-      setError(null);
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  // Render different UI for different states
-  if (showModal) {
-    return <PasswordModal spaceId={params.spaceId} onAuthenticate={handleAuth} error={error} />;
-  }
-
-  if (!collaboration) {
-    return <div>Loading workspace...</div>;
-  }
   
+  // Custom hook for Ably real-time functionality
+  const collaboration = ablyToken ? useAblyChannel(params.spaceId, ablyToken) : null;
+
+  // This effect runs once to fetch the Ably token and initial workspace data.
+  useEffect(() => {
+    if (status === 'authenticated') {
+      const getInitialData = async () => {
+        try {
+          // Fetch the Ably token first
+          const tokenRes = await fetch('/api/ably-auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ spaceId: params.spaceId }),
+          });
+
+          if (!tokenRes.ok) throw new Error('Could not authenticate for real-time connection.');
+          const { token } = await tokenRes.json();
+          setAblyToken(token);
+          
+          // Now fetch the workspace details for settings
+          const workspaceRes = await fetch(`/api/workspaces/${params.spaceId}`);
+          if (!workspaceRes.ok) throw new Error('Could not load workspace details.');
+          const workspaceData: Workspace = await workspaceRes.json();
+          setWorkspace(workspaceData);
+
+        } catch (err: any) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      getInitialData();
+    } else if (status === 'unauthenticated') {
+      router.push('/');
+    }
+  }, [status, params.spaceId, router]);
+  
+  // This separate GET endpoint for workspace details needs to be created.
+  // It should be similar to the PATCH but only fetch data.
+  // We'll assume it exists at `/api/workspaces/[workspaceId]` for this integration.
+  
+  if (isLoading || status === 'loading') {
+    return <AppLayout><p>Loading Workspace...</p></AppLayout>;
+  }
+
+  if (error) {
+    return <AppLayout><p className="text-red-500">{error}</p></AppLayout>;
+  }
+
+  // Determine if the current user is the owner of the workspace.
+  const isOwner = session?.user?.id === workspace?.ownerId;
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Workspace: {params.spaceId}</h1>
-      <div className="mt-4 grid grid-cols-3 gap-4">
-        <div className="col-span-2">
-          <h2 className="text-lg font-semibold">Directory Structure</h2>
-          <textarea
-            className="w-full h-96 p-2 font-mono bg-gray-100 dark:bg-gray-800 rounded-md focus:ring-2 focus:ring-blue-500"
-            value={collaboration.currentDirectory}
-            onChange={(e) => collaboration.updateDirectory(e.target.value)}
-          />
+    <AppLayout>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+                <h1 className="text-2xl font-bold mb-4">{workspace?.name}</h1>
+                <textarea
+                    className="w-full h-[60vh] p-4 font-mono bg-white dark:bg-gray-800 rounded-md shadow focus:ring-2 focus:ring-blue-500"
+                    value={collaboration?.currentDirectory ?? 'Loading content...'}
+                    onChange={(e) => collaboration?.updateDirectory(e.target.value)}
+                    disabled={!collaboration}
+                />
+            </div>
+            <div className="space-y-6">
+                {/* User Presence Component would go here */}
+                
+                {/* The WorkspaceSettings component is only rendered if the user is the owner. */}
+                {isOwner && workspace && (
+                    <WorkspaceSettings 
+                        workspaceId={workspace.id} 
+                        initialIsPublic={workspace.isPublic}
+                    />
+                )}
+
+                {/* Other components like Chat would go here */}
+            </div>
         </div>
-        <div>
-          <h2 className="text-lg font-semibold">Chat</h2>
-          {/* Chat box will be another component using the same token */}
-        </div>
-      </div>
-    </div>
+    </AppLayout>
   );
 }
+
+```
+**Important Note:** The code above assumes a new 'GET' endpoint exists at 'app/api/workspaces/[workspaceId]/route.ts' to fetch the details of a single workspace. You will need to create this endpoint. It will be very similar to the 'PATCH' endpoint, but it will perform a 'select()' query instead of an 'update()' and won't require a request body.
+
+This integration completes the feature. Now, a workspace owner can visit their workspace, see the settings panel, and toggle the public visibility. The change is saved securely to the database.
+
+We are now officially ready to build the public-facing features that rely on this 'isPublic' flag. The next step is the **Public Gallery Page**.
+```

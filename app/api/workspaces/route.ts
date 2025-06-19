@@ -1,17 +1,17 @@
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth';
 import { createClient } from '@supabase/supabase-js';
 import { authOptions } from '../auth/[...nextauth]/route';
-
-// Initialize the Supabase client.
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 /**
  * Handles GET requests to fetch the workspaces for the currently authenticated user.
  */
 export async function GET(request: Request) {
+  // CORRECT: Initialize the client inside the handler.
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.id) {
@@ -34,25 +34,27 @@ export async function GET(request: Request) {
 
   } catch (e) {
     console.error('Unexpected GET error:', e);
-    return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'An unexpected error occurred.' }), { status: 500 });
   }
 }
 
 
 /**
  * Handles POST requests to create a new workspace for the authenticated user.
- * @param {Request} request The incoming request object, expecting a JSON body with a 'name' property.
- * @returns {Response} A JSON response containing the newly created workspace or an error.
  */
 export async function POST(request: Request) {
-  // 1. Authenticate the user.
+  // CORRECT: Initialize the client inside the handler.
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.id) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
-  // 2. Validate the request body.
   let name: string;
   try {
     const body = await request.json();
@@ -65,25 +67,23 @@ export async function POST(request: Request) {
   }
 
 
-  // 3. Insert the new workspace into the database.
   try {
     const { data, error } = await supabase
       .from('workspaces')
       .insert({
         name: name.trim(),
         ownerId: session.user.id,
-        content: `Welcome to ${name.trim()}!\n\n- Getting Started\n  - Add files and folders\n  - Invite collaborators`, // Provide some default content.
+        content: `Welcome to ${name.trim()}!\n\n- Getting Started\n  - Add files and folders\n  - Invite collaborators`,
       })
-      .select('id, name, updatedAt') // Return the newly created record.
-      .single(); // We expect to insert and return only one record.
+      .select('id, name, updatedAt')
+      .single();
 
     if (error) {
       console.error('Supabase POST error:', error);
       return new Response(JSON.stringify({ error: 'Failed to create workspace.' }), { status: 500 });
     }
 
-    // 4. Return the newly created workspace data.
-    return new Response(JSON.stringify(data), { status: 201 }); // 201 Created
+    return new Response(JSON.stringify(data), { status: 201 });
 
   } catch (e) {
     console.error('Unexpected POST error:', e);
