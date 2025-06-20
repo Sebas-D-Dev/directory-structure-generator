@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'next/link'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from './api/auth/[...nextauth]/route'
 import { ArrowRightIcon } from '@heroicons/react/20/solid' // A popular icon library
@@ -53,7 +53,7 @@ export default async function HomePage() {
               )}
               <Link
                 href="/gallery"
-                className="text-sm leading-6 font-semibold text-gray-900 dark:text-white"
+                className="text-sm font-semibold leading-6 text-gray-900 dark:text-white"
               >
                 Explore Gallery <span aria-hidden="true">→</span>
               </Link>

@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useSession, signIn, signOut } from 'next-auth/react';
-import Image from 'next/image';
+import { useSession, signIn, signOut } from 'next-auth/react'
+import Image from 'next/image'
 
 export default function AuthButton() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   if (status === 'loading') {
-    return <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />;
+    return <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
   }
 
   if (session) {
@@ -22,20 +22,20 @@ export default function AuthButton() {
         />
         <button
           onClick={() => signOut()}
-          className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+          className="rounded-md bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-200"
         >
           Sign Out
         </button>
       </div>
-    );
+    )
   }
 
   return (
     <button
       onClick={() => signIn('github')}
-      className="px-4 py-1 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-black"
+      className="rounded-md bg-gray-800 px-4 py-1 text-sm font-medium text-white hover:bg-black"
     >
       Sign In
     </button>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { Metadata } from 'next';
-import siteMetadata from '@/data/siteMetadata'; // We'll still use this for general site info for now
+import { Metadata } from 'next'
+import siteMetadata from '@/data/siteMetadata' // We'll still use this for general site info for now
 
 interface PageSEOProps {
   title: string

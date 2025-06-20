@@ -1,56 +1,56 @@
-'use client';
+'use client'
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import AppLayout from '@/layouts/AppLayout';
-import Link from 'next/link';
-import NewWorkspaceModal from '@/components/NewWorkspaceModal';
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import AppLayout from '@/layouts/AppLayout'
+import Link from 'next/link'
+import NewWorkspaceModal from '@/components/NewWorkspaceModal'
 
 // Define the shape of a workspace object.
 interface Workspace {
-  id: string;
-  name: string;
-  updatedAt: string;
+  id: string
+  name: string
+  updatedAt: string
 }
 
 /**
  * The user dashboard page, now with functionality to create new workspaces.
  */
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Effect to handle session status and redirect unauthenticated users.
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push('/');
+      router.push('/')
     }
-  }, [status, router]);
+  }, [status, router])
 
   // Effect to fetch the user's workspaces.
   useEffect(() => {
     if (status === 'authenticated') {
       const fetchWorkspaces = async () => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
-          const response = await fetch('/api/workspaces');
-          if (!response.ok) throw new Error('Failed to fetch workspaces.');
-          const data: Workspace[] = await response.json();
-          setWorkspaces(data);
+          const response = await fetch('/api/workspaces')
+          if (!response.ok) throw new Error('Failed to fetch workspaces.')
+          const data: Workspace[] = await response.json()
+          setWorkspaces(data)
         } catch (err) {
-          setError('Could not load your workspaces.');
+          setError('Could not load your workspaces.')
         } finally {
-          setIsLoading(false);
+          setIsLoading(false)
         }
-      };
-      fetchWorkspaces();
+      }
+      fetchWorkspaces()
     }
-  }, [status]);
+  }, [status])
 
   /**
    * Handles the creation of a new workspace.
@@ -62,29 +62,37 @@ export default function DashboardPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name }),
-    });
+    })
 
     if (!response.ok) {
-      const { error } = await response.json();
-      throw new Error(error || 'Failed to create workspace.');
+      const { error } = await response.json()
+      throw new Error(error || 'Failed to create workspace.')
     }
 
-    const newWorkspace: Workspace = await response.json();
+    const newWorkspace: Workspace = await response.json()
 
     // Optimistically update the UI before redirecting.
-    setWorkspaces((prev) => [newWorkspace, ...prev]);
-    setIsModalOpen(false);
+    setWorkspaces((prev) => [newWorkspace, ...prev])
+    setIsModalOpen(false)
 
     // Redirect the user to their newly created workspace.
-    router.push(`/space/${newWorkspace.id}`);
-  };
+    router.push(`/space/${newWorkspace.id}`)
+  }
 
   if (status === 'loading' || isLoading) {
-    return <AppLayout><p>Loading...</p></AppLayout>;
+    return (
+      <AppLayout>
+        <p>Loading...</p>
+      </AppLayout>
+    )
   }
-  
+
   if (error) {
-     return <AppLayout><p className="text-red-500">{error}</p></AppLayout>;
+    return (
+      <AppLayout>
+        <p className="text-red-500">{error}</p>
+      </AppLayout>
+    )
   }
 
   return (
@@ -107,10 +115,13 @@ export default function DashboardPage() {
       <div className="mt-8 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               {workspaces.map((workspace) => (
                 <li key={workspace.id} className="py-4">
-                  <Link href={`/space/${workspace.id}`} className="block hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md">
+                  <Link
+                    href={`/space/${workspace.id}`}
+                    className="block rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
                     <div className="flex items-center space-x-4">
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
@@ -131,14 +142,14 @@ export default function DashboardPage() {
               ))}
             </ul>
             {workspaces.length === 0 && (
-              <div className="text-center py-12">
-                 <p className="text-gray-500">You haven't created any workspaces yet.</p>
-                 <p className="mt-1 text-sm text-gray-500">Click "New Workspace" to get started.</p>
+              <div className="py-12 text-center">
+                <p className="text-gray-500">You haven't created any workspaces yet.</p>
+                <p className="mt-1 text-sm text-gray-500">Click "New Workspace" to get started.</p>
               </div>
             )}
           </div>
         </div>
       </div>
     </AppLayout>
-  );
+  )
 }

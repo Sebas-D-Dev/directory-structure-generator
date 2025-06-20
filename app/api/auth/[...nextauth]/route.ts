@@ -1,6 +1,19 @@
-import NextAuth from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
-import { SupabaseAdapter } from '@auth/supabase-adapter';
+import NextAuth from 'next-auth'
+import GithubProvider from 'next-auth/providers/github'
+import { SupabaseAdapter } from '@auth/supabase-adapter'
+
+// Extend the Session type to include user.id
+import { Session } from 'next-auth'
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+    }
+  }
+}
 
 const handler = NextAuth({
   providers: [
@@ -17,11 +30,11 @@ const handler = NextAuth({
     session({ session, user }) {
       // Add user ID to the session object for server-side access
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = user.id
       }
-      return session;
+      return session
     },
   },
-});
+})
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }

@@ -1,24 +1,24 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 // Define the shape of a single user in the presence list.
 // The name and avatarSeed are provided by the backend for consistency.
 interface User {
-  id: string; // The user's unique connection ID from Ably
-  name: string;
-  avatarSeed: string;
+  id: string // The user's unique connection ID from Ably
+  name: string
+  avatarSeed: string
 }
 
 // Define the interface for our application's state and the actions to modify it.
 interface AppState {
   // State for the directory editor
-  directoryText: string;
-  setDirectoryText: (text: string) => void;
+  directoryText: string
+  setDirectoryText: (text: string) => void
 
   // State for managing users in the workspace
-  users: User[];
-  setUsers: (users: User[]) => void;
-  addUser: (user: User) => void;
-  removeUser: (userId: string) => void;
+  users: User[]
+  setUsers: (users: User[]) => void
+  addUser: (user: User) => void
+  removeUser: (userId: string) => void
 }
 
 /**
@@ -34,7 +34,6 @@ export const useAppStore = create<AppState>((set) => ({
    * @param {string} text The new text content for the directory structure.
    */
   setDirectoryText: (text: string) => set({ directoryText: text }),
-
 
   // --- User Presence State ---
   users: [],
@@ -53,9 +52,9 @@ export const useAppStore = create<AppState>((set) => ({
     set((state) => {
       // Avoid adding a user if they are already in the list
       if (state.users.some((user) => user.id === newUser.id)) {
-        return state;
+        return state
       }
-      return { users: [...state.users, newUser] };
+      return { users: [...state.users, newUser] }
     }),
 
   /**
@@ -66,4 +65,4 @@ export const useAppStore = create<AppState>((set) => ({
     set((state) => ({
       users: state.users.filter((user) => user.id !== userId),
     })),
-}));
+}))

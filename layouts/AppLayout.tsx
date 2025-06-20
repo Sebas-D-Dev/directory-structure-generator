@@ -17,6 +17,7 @@ interface AppLayoutProps {
  * @param {AppLayoutProps} { children }
  * @returns {JSX.Element} The rendered layout component.
  */
+
 const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
   return (
     // The main container for the authenticated view

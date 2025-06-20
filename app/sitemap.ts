@@ -10,7 +10,7 @@ const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SE
  * @returns {Promise<MetadataRoute.Sitemap>} The sitemap object.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const siteUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
 
   // 1. Define the static routes of your application.
   const staticRoutes = ['', '/gallery', '/dashboard'].map((route) => ({
@@ -18,20 +18,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString().split('T')[0],
     changeFrequency: 'daily' as const,
     priority: route === '' ? 1.0 : 0.8,
-  }));
+  }))
 
   // 2. Dynamically fetch all public workspaces to add them to the sitemap.
   const { data: publicWorkspaces } = await supabase
     .from('workspaces')
     .select('id, updatedAt')
-    .eq('isPublic', true);
-  
+    .eq('isPublic', true)
+
   const workspaceRoutes = (publicWorkspaces || []).map(({ id, updatedAt }) => ({
     url: `${siteUrl}/space/${id}`,
     lastModified: new Date(updatedAt).toISOString().split('T')[0],
     changeFrequency: 'weekly' as const,
     priority: 0.6,
-  }));
+  }))
 
   // 3. Dynamically fetch all users to create links to their profile pages.
   const { data: users } = await supabase.from('users').select('id')
@@ -44,5 +44,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // 4. Combine all routes into a single sitemap.
-  return [...staticRoutes, ...workspaceRoutes, ...profileRoutes];
+  return [...staticRoutes, ...workspaceRoutes, ...profileRoutes]
 }

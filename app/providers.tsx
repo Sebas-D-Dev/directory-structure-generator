@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { SessionProvider } from 'next-auth/react';
-import React from 'react';
+import { SessionProvider } from 'next-auth/react'
+import React from 'react'
 
 /**
  * Defines the props for the Providers component.
@@ -9,7 +9,7 @@ import React from 'react';
  * @property {React.ReactNode} children - The child components to be wrapped by the providers.
  */
 interface ProvidersProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 /**
@@ -20,5 +20,5 @@ interface ProvidersProps {
  * @returns {JSX.Element} The rendered providers wrapping the application.
  */
 export default function Providers({ children }: ProvidersProps) {
-  return <SessionProvider>{children}</SessionProvider>;
+  return <SessionProvider>{children}</SessionProvider>
 }

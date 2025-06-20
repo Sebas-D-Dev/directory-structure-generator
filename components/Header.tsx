@@ -13,9 +13,9 @@ const Header = () => {
   const headerTitle = 'Live Collab'
   const isNavSticky = false // Set to true if you want a sticky navbar.
 
-  let headerClass = 'flex items-center w-full justify-between py-6';
+  let headerClass = 'flex items-center w-full justify-between py-6'
   if (isNavSticky) {
-    headerClass += ' sticky top-0 z-50 bg-white dark:bg-gray-950';
+    headerClass += ' sticky top-0 z-50 bg-white dark:bg-gray-950'
   }
 
   return (

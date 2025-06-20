@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import { Fragment, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 
 /**
  * Defines the props for the NewWorkspaceModal component.
@@ -11,9 +11,9 @@ import { Dialog, Transition } from '@headlessui/react';
  * @property {(name: string) => Promise<void>} onCreate - Async function to call when the user submits the form.
  */
 interface NewWorkspaceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreate: (name: string) => Promise<void>;
+  isOpen: boolean
+  onClose: () => void
+  onCreate: (name: string) => Promise<void>
 }
 
 /**
@@ -21,33 +21,33 @@ interface NewWorkspaceModalProps {
  * It provides a form for the user to enter a name for their new workspace.
  */
 export default function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWorkspaceModalProps) {
-  const [name, setName] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState('')
+  const [isCreating, setIsCreating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || isCreating) return;
+    e.preventDefault()
+    if (!name.trim() || isCreating) return
 
-    setIsCreating(true);
-    setError(null);
+    setIsCreating(true)
+    setError(null)
 
     try {
-      await onCreate(name);
+      await onCreate(name)
       // The parent component will be responsible for closing the modal on success.
     } catch (err: any) {
-      setError(err.message || 'An unknown error occurred.');
+      setError(err.message || 'An unknown error occurred.')
     } finally {
-      setIsCreating(false);
+      setIsCreating(false)
     }
-  };
-  
+  }
+
   // Reset form state when the modal is closed.
   const handleClose = () => {
-    setName('');
-    setError(null);
-    setIsCreating(false);
-    onClose();
+    setName('')
+    setError(null)
+    setIsCreating(false)
+    onClose()
   }
 
   return (
@@ -99,9 +99,7 @@ export default function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWork
                       required
                     />
                   </div>
-                  {error && (
-                    <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
-                  )}
+                  {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
                   <div className="mt-6 flex justify-end gap-x-3">
                     <button
                       type="button"
@@ -125,5 +123,5 @@ export default function NewWorkspaceModal({ isOpen, onClose, onCreate }: NewWork
         </div>
       </Dialog>
     </Transition>
-  );
+  )
 }
