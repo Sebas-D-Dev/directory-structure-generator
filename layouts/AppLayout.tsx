@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 /**
  * Defines the props for the AppLayout component.
@@ -6,7 +6,7 @@ import React from 'react';
  * @property {React.ReactNode} children - The main content to be rendered within the layout.
  */
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 /**
@@ -19,7 +19,7 @@ interface AppLayoutProps {
  */
 const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
   return (
-    // The main container for the authenticated view.
+    // The main container for the authenticated view
     // A distinct background color helps differentiate it from the public site.
     <div className="flex-grow bg-gray-50 py-6 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -27,7 +27,7 @@ const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
         {children}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AppLayout;
+export default AppLayout
