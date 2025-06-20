@@ -1,30 +1,46 @@
 'use client'
 
-import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react'
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
+import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useEffect, useRef } from 'react'
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Link from './Link'
-import headerNavLinks from '@/data/headerNavLinks'
+import { useSession } from 'next-auth/react'
 
+// Define the navigation links directly within the component.
+// This removes the dependency on the deleted 'headerNavLinks.ts' file.
+const navLinks = [
+  { href: '/dashboard', title: 'Dashboard' },
+  { href: '/gallery', title: 'Gallery' },
+  // We can add more links here later, like '/pricing' or '/about'
+]
+
+/**
+ * A mobile-first navigation menu that slides out.
+ * It now handles its own navigation links and displays links conditionally
+ * based on the user's authentication status.
+ */
 const MobileNav = () => {
+  const { data: session } = useSession()
   const [navShow, setNavShow] = useState(false)
   const navRef = useRef(null)
 
   const onToggleNav = () => {
-    setNavShow((status) => {
-      if (status) {
-        enableBodyScroll(navRef.current)
+    setNavShow((prev: boolean) => {
+      if (prev) {
+        if (navRef.current) enableBodyScroll(navRef.current)
       } else {
-        // Prevent scrolling
-        disableBodyScroll(navRef.current)
+        if (navRef.current) disableBodyScroll(navRef.current)
       }
-      return !status
+      return !prev
     })
   }
 
   useEffect(() => {
-    return clearAllBodyScrollLocks
-  })
+    // Clean up the body scroll lock when the component unmounts.
+    return () => {
+      clearAllBodyScrollLocks()
+    }
+  }, [])
 
   return (
     <>
@@ -33,7 +49,7 @@ const MobileNav = () => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          className="hover:text-primary-500 dark:hover:text-primary-400 h-8 w-8 text-gray-900 dark:text-gray-100"
+          className="h-8 w-8 text-gray-900 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
         >
           <path
             fillRule="evenodd"
@@ -42,9 +58,9 @@ const MobileNav = () => {
           />
         </svg>
       </button>
-      <Transition appear show={navShow} as={Fragment} unmount={false}>
-        <Dialog as="div" onClose={onToggleNav} unmount={false}>
-          <TransitionChild
+      <Transition appear show={navShow} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={onToggleNav}>
+          <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -52,31 +68,26 @@ const MobileNav = () => {
             leave="ease-in duration-200"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            unmount={false}
           >
-            <div className="z-60 fixed inset-0 bg-black/25" />
-          </TransitionChild>
+            <div className="fixed inset-0 bg-black/25" />
+          </Transition.Child>
 
-          <TransitionChild
+          <Transition.Child
             as={Fragment}
             enter="transition ease-in-out duration-300 transform"
-            enterFrom="translate-x-full opacity-0"
-            enterTo="translate-x-0 opacity-95"
+            enterFrom="translate-x-full"
+            enterTo="translate-x-0"
             leave="transition ease-in duration-200 transform"
-            leaveFrom="translate-x-0 opacity-95"
-            leaveTo="translate-x-full opacity-0"
-            unmount={false}
+            leaveFrom="translate-x-0"
+            leaveTo="translate-x-full"
           >
-            <DialogPanel className="z-70 dark:bg-gray-950/98 fixed left-0 top-0 h-full w-full bg-white/95 duration-300">
-              <nav
-                ref={navRef}
-                className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pl-12 pt-2 text-left"
-              >
-                {headerNavLinks.map((link) => (
+            <Dialog.Panel className="fixed right-0 top-0 z-50 h-full w-full max-w-xs bg-white/95 shadow-xl backdrop-blur-sm dark:bg-gray-950/95">
+              <nav ref={navRef} className="mt-8 flex h-full flex-col p-6">
+                {navLinks.map((link) => (
                   <Link
-                    key={link.title}
+                    key={link.href}
                     href={link.href}
-                    className="hover:text-primary-500 dark:hover:text-primary-400 mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 dark:text-gray-100"
+                    className="py-3 text-2xl font-bold tracking-widest text-gray-900 hover:text-blue-500 dark:text-gray-100 dark:hover:text-blue-400"
                     onClick={onToggleNav}
                   >
                     {link.title}
@@ -85,8 +96,8 @@ const MobileNav = () => {
               </nav>
 
               <button
-                className="hover:text-primary-500 dark:hover:text-primary-400 z-80 fixed right-4 top-7 h-16 w-16 p-4 text-gray-900 dark:text-gray-100"
-                aria-label="Toggle Menu"
+                className="absolute right-4 top-4 h-8 w-8 text-gray-900 dark:text-gray-100"
+                aria-label="Close Menu"
                 onClick={onToggleNav}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -97,8 +108,8 @@ const MobileNav = () => {
                   />
                 </svg>
               </button>
-            </DialogPanel>
-          </TransitionChild>
+            </Dialog.Panel>
+          </Transition.Child>
         </Dialog>
       </Transition>
     </>
