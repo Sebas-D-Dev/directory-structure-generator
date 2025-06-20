@@ -1,31 +1,41 @@
-import { Metadata } from 'next'
-import siteMetadata from '@/data/siteMetadata'
+import { Metadata } from 'next';
+import siteMetadata from '@/data/siteMetadata'; // We'll still use this for general site info for now
 
 interface PageSEOProps {
   title: string
   description?: string
   image?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any
+  // Allows passing any other valid Metadata properties
+  [key: string]: unknown
 }
 
+/**
+ * Generates SEO metadata for a given page.
+ * @param {PageSEOProps} { title, description, image, ...rest }
+ * @returns {Metadata} The generated metadata object for a Next.js page.
+ */
 export function genPageMetadata({ title, description, image, ...rest }: PageSEOProps): Metadata {
+  const pageTitle = `${title} | ${siteMetadata.title}`
+  const pageDescription = description || siteMetadata.description
+  const ogImage = image || siteMetadata.socialBanner
+
   return {
-    title,
-    description: description || siteMetadata.description,
+    title: pageTitle,
+    description: pageDescription,
     openGraph: {
-      title: `${title} | ${siteMetadata.title}`,
-      description: description || siteMetadata.description,
-      url: './',
+      title: pageTitle,
+      description: pageDescription,
+      url: './', // Relative URL is fine here
       siteName: siteMetadata.title,
-      images: image ? [image] : [siteMetadata.socialBanner],
+      images: ogImage ? [ogImage] : [],
       locale: 'en_US',
       type: 'website',
     },
     twitter: {
-      title: `${title} | ${siteMetadata.title}`,
       card: 'summary_large_image',
-      images: image ? [image] : [siteMetadata.socialBanner],
+      title: pageTitle,
+      description: pageDescription,
+      images: ogImage ? [ogImage] : [],
     },
     ...rest,
   }
