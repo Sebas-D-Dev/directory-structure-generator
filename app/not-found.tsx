@@ -1,13 +1,12 @@
 import Link from 'next/link'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from './api/auth/[...nextauth]/route'
+import { auth } from '@/auth'
 
 /**
  * A custom 404 page tailored for the collaboration platform.
  * It provides relevant links based on the user's authentication status.
  */
 export default async function NotFound() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   return (
     <div className="flex flex-col items-start justify-start md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6">

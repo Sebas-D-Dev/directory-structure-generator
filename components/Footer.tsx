@@ -6,16 +6,19 @@ import SocialIcon from '@/components/social-icons'
  * It contains essential copyright information and a minimal set of relevant links.
  */
 export default function Footer() {
-  const author = 'Your Team Name'
-  const title = 'Live Collab'
-  const githubUrl = 'https://github.com' // Replace with your project's GitHub URL
+  const author = 'Sebas-D-Dev'
+  const title = 'DirectLiveCollab'
+  const githubUrl = 'https://github.com/Sebas-D-Dev/directory-structure-generator'
 
   return (
     <footer>
       <div className="mt-16 flex flex-col items-center">
         <div className="mb-3 flex space-x-4">
-          {/* We can add relevant social links here later if needed */}
-          <SocialIcon kind="github" href={githubUrl} size={6} />
+          {/* Social media links & icons */}
+          <SocialIcon kind="mail" href={`mailto:${author}@gmail.com`} size={4} />
+          <SocialIcon kind="github" href={githubUrl} size={4} />
+          <SocialIcon kind="twitter" href="https://twitter.com/Sebas_D_Dev" size={4} />
+          <SocialIcon kind="linkedin" href="https://www.linkedin.com/in/sebas-d-dev/" size={4} />
         </div>
         <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
           <div>{author}</div>
@@ -25,7 +28,6 @@ export default function Footer() {
           <Link href="/">{title}</Link>
         </div>
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
-          {/* This can be updated or removed as desired */}
           <p>Built with Next.js and Tailwind CSS</p>
         </div>
       </div>

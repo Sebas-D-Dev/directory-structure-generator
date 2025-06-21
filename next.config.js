@@ -1,4 +1,4 @@
-import withBundleAnalyzer from '@next/bundle-analyzer'
+const withBundleAnalyzer = require('@next/bundle-analyzer')
 
 // Define a secure and relevant Content Security Policy (CSP) for our platform
 const ContentSecurityPolicy = `
@@ -91,6 +91,6 @@ const nextConfig = {
 }
 
 // We only need the bundle analyzer now.
-export default withBundleAnalyzer({
+module.exports = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })(nextConfig)

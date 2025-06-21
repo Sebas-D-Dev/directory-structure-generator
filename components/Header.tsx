@@ -1,7 +1,7 @@
 import Link from './Link'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
-import AuthButton from './AuthButton' // We'll add the AuthButton here later
+import AuthButton from './AuthButton'
 
 /**
  * The main site header.
@@ -10,7 +10,7 @@ import AuthButton from './AuthButton' // We'll add the AuthButton here later
  */
 const Header = () => {
   // Configuration for the header.
-  const headerTitle = 'Live Collab'
+  const headerTitle = 'Direct Live Collab'
   const isNavSticky = false // Set to true if you want a sticky navbar.
 
   let headerClass = 'flex items-center w-full justify-between py-6'

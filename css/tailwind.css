@@ -1,11 +1,8 @@
-@import 'tailwindcss';
-@plugin "@tailwindcss/forms";
-@plugin '@tailwindcss/typography';
-@source '../node_modules/pliny';
-@custom-variant dark (&:where(.dark, .dark *));
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Core theme configuration */
-@theme {
+:root {
   /* Font families */
   --font-sans:
     var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',

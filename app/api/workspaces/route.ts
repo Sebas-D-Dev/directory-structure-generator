@@ -1,6 +1,5 @@
-import { getServerSession } from 'next-auth'
 import { createClient } from '@supabase/supabase-js'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { auth } from '@/auth'
 
 /**
  * Handles GET requests to fetch the workspaces for the currently authenticated user.
@@ -9,7 +8,7 @@ export async function GET(request: Request) {
   // CORRECT: Initialize the client inside the handler.
   const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session || !session.user?.id) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
@@ -41,7 +40,7 @@ export async function POST(request: Request) {
   // CORRECT: Initialize the client inside the handler.
   const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session || !session.user?.id) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })

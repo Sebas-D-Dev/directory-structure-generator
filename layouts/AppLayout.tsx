@@ -18,7 +18,7 @@ interface AppLayoutProps {
  * @returns {JSX.Element} The rendered layout component.
  */
 
-const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
+const AppLayout = ({ children }: AppLayoutProps): React.JSX.Element => {
   return (
     // The main container for the authenticated view
     // A distinct background color helps differentiate it from the public site.

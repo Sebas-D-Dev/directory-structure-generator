@@ -1,14 +1,13 @@
 import Link from 'next/link'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from './api/auth/[...nextauth]/route'
-import { ArrowRightIcon } from '@heroicons/react/20/solid' // A popular icon library
+import { auth } from '@/auth'
+import { ArrowRightIcon } from '@heroicons/react/20/solid'
 
 /**
  * The main landing page for the collaboration platform.
  * It provides a clear value proposition and calls-to-action for new and returning users.
  */
 export default async function HomePage() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   return (
     <div className="relative isolate pt-14">

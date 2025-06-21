@@ -1,52 +1,18 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
-import globals from 'globals'
-import tsParser from '@typescript-eslint/parser'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+import reactPlugin from 'eslint-plugin-react'
+import hooksPlugin from 'eslint-plugin-react-hooks'
+import a11yPlugin from 'eslint-plugin-jsx-a11y'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
+const compat = new FlatCompat()
 
-export default [
-  {
-    ignores: [],
-  },
-  js.configs.recommended,
-  ...compat.extends(
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jsx-a11y/recommended',
-    'plugin:prettier/recommended',
-    'next',
-    'next/core-web-vitals'
-  ),
+module.exports = [
+  ...compat.extends('next/core-web-vitals'),
   {
     plugins: {
-      '@typescript-eslint': typescriptEslint,
+      react: reactPlugin,
+      'react-hooks': hooksPlugin,
+      'jsx-a11y': a11yPlugin,
     },
-
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.amd,
-        ...globals.node,
-      },
-
-      parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'commonjs',
-
-      parserOptions: {
-        project: true,
-        tsconfigRootDir: __dirname,
-      },
-    },
-
     rules: {
       'prettier/prettier': 'error',
       'react/react-in-jsx-scope': 'off',

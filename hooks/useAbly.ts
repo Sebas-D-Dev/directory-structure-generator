@@ -1,7 +1,6 @@
-// hooks/useAbly.ts (New File)
 import Ably from 'ably'
 import { useEffect } from 'react'
-import { useAppStore } from '@/store/appStore' // Assuming a Zustand store exists
+import { useAppStore } from '@/store/appStore'
 
 // A debounced function to avoid flooding the channel
 const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {

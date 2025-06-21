@@ -16,11 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/layouts/*": ["layouts/*"],
-      "@/css/*": ["css/*"],
-      "@/hooks/*": ["hooks/*"],
-      "@/store/*": ["store/*"]
+      "@/*": ["./*"]
     },
     "plugins": [
       {
