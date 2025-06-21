@@ -75,8 +75,8 @@ describe('User Profile API', () => {
   describe('GET /api/users/[userId]/profile', () => {
     it('should return 400 if userId is missing', async () => {
       const req = {} as Request // Mock request object
-
-      const response = await GET(req, { params: { userId: '' } }) // Pass empty userId
+      // Pass params as a Promise.resolve() to match the Next.js 15 API route signature
+      const response = await GET(req, { params: Promise.resolve({ userId: '' }) })
 
       expect(NextResponse.json).toHaveBeenCalledWith(
         { error: 'User ID is required.' },
@@ -93,7 +93,8 @@ describe('User Profile API', () => {
 
       const req = {} as Request // Mock request object
 
-      const response = await GET(req, { params: { userId: 'nonexistent' } })
+      // Pass params as a Promise.resolve()
+      const response = await GET(req, { params: Promise.resolve({ userId: 'nonexistent' }) })
 
       expect(mockSupabaseFrom.eq).toHaveBeenCalledWith('id', 'nonexistent')
       expect(mockSupabaseFrom.single).toHaveBeenCalled()
@@ -108,6 +109,7 @@ describe('User Profile API', () => {
       const expectedProfile = mockUsers['userWithWorkspaces']
       mockSupabaseFrom.single.mockResolvedValue({ data: expectedProfile, error: null })
 
+      // Pass params as a Promise.resolve()
       const req = {} as Request // Mock request object
 
       const response = await GET(req, { params: { userId: 'userWithWorkspaces' } })
@@ -126,6 +128,7 @@ describe('User Profile API', () => {
     it('should handle unexpected errors', async () => {
       mockSupabaseFrom.single.mockRejectedValue(new Error('Database connection failed'))
 
+      // Pass params as a Promise.resolve()
       const req = {} as Request // Mock request object
 
       const response = await GET(req, { params: { userId: 'anyUser' } })

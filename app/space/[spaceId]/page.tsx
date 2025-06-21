@@ -30,19 +30,21 @@ export default function SpacePage({ params }: { params: { spaceId: string } }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const spaceId = params.spaceId
+
   // Custom hook for Ably real-time functionality
-  const collaboration = useAblyChannel(params.spaceId, ablyToken ?? '')
+  const collaboration = useAblyChannel(spaceId, ablyToken ?? '')
 
   // This effect runs once to fetch the Ably token and initial workspace data.
   useEffect(() => {
-    if (status === 'authenticated') {
-      const getInitialData = async () => {
+    async function getInitialData() {
+      if (status === 'authenticated') {
         try {
           // Fetch the Ably token first
           const tokenRes = await fetch('/api/ably-auth', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ spaceId: params.spaceId }),
+            body: JSON.stringify({ spaceId }),
           })
 
           if (!tokenRes.ok) throw new Error('Could not authenticate for real-time connection.')
@@ -50,7 +52,7 @@ export default function SpacePage({ params }: { params: { spaceId: string } }) {
           setAblyToken(token)
 
           // Now fetch the workspace details for settings
-          const workspaceRes = await fetch(`/api/workspaces/${params.spaceId}`)
+          const workspaceRes = await fetch(`/api/workspaces/${spaceId}`)
           if (!workspaceRes.ok) throw new Error('Could not load workspace details.')
           const workspaceData: Workspace = await workspaceRes.json()
           setWorkspace(workspaceData)
@@ -63,16 +65,12 @@ export default function SpacePage({ params }: { params: { spaceId: string } }) {
         } finally {
           setIsLoading(false)
         }
+      } else if (status === 'unauthenticated') {
+        router.push('/')
       }
-      getInitialData()
-    } else if (status === 'unauthenticated') {
-      router.push('/')
     }
-  }, [status, params.spaceId, router])
-
-  // This separate GET endpoint for workspace details needs to be created.
-  // It should be similar to the PATCH but only fetch data.
-  // We'll assume it exists at `/api/workspaces/[workspaceId]` for this integration.
+    getInitialData()
+  }, [status, spaceId, router])
 
   if (isLoading || status === 'loading') {
     return (
@@ -119,7 +117,12 @@ export default function SpacePage({ params }: { params: { spaceId: string } }) {
     </AppLayout>
   )
 }
-
+/**
+ * Type helper to ensure the params object is typed as a Promise if needed.
+ * This is not standard for Next.js page components, but if you want to enforce
+ * Promise in the parameters, you can wrap the props in a Promise type.
+ */
+export type SpacePageParams = Promise<{ params: { spaceId: string } }>
 /*
 **Important Note:** The code above assumes a new 'GET' endpoint exists at 'app/api/workspaces/[workspaceId]/route.ts' to fetch the details of a single workspace. You will need to create this endpoint. It will be very similar to the 'PATCH' endpoint, but it will perform a 'select()' query instead of an 'update()' and won't require a request body.
 

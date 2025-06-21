@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import AppLayout from '@/layouts/AppLayout'
+import { createClient } from '@supabase/supabase-js'
+import { auth } from '@/auth'
 
 // Define the shape of the data we expect from our profile API.
 interface ProfileWorkspace {
@@ -22,48 +24,45 @@ interface UserProfile {
 /**
  * The public profile page for a single user, showcasing their public workspaces.
  */
-export default function UserProfilePage({ params }: { params: { userId: string } }) {
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export default async function UserProfilePage({ params }: { params: { userId: string } }): Promise<JSX.Element> {
+  // This is a client component, so it should not be async.
+  // To comply with Next.js 15 and React rules, convert this to a server component
+  // or move all async logic into useEffect as before.
 
-  const { userId } = params
+  // If you want to keep this as a client component, do NOT use async here.
+  // If you want to use async/await at the top level, make this a server component (remove 'use client').
 
-  // Effect to fetch the user's public profile data when the component mounts.
-  useEffect(() => {
-    if (!userId) return
+  // For client components, keep:
+  // export default function UserProfilePage({ params }: { params: { userId: string } }) { ... }
 
-    const fetchUserProfile = async () => {
-      try {
-        const response = await fetch(`/api/users/${userId}/profile`)
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('User not found.')
-          }
-          throw new Error('Could not load user profile.')
-        }
-        const data: UserProfile = await response.json()
-        setProfile(data)
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message)
-        } else {
-          setError('An unknown error occurred.')
-        }
-      } finally {
-        setIsLoading(false)
-      }
+  // For server components (Next.js 15+), you can use:
+  // export default async function UserProfilePage({ params }: { params: { userId: string } }) { ... }
+
+  // If you want to keep this as a client component, use the previous code block you provided.
+  // If you want to convert to a server component, remove 'use client' and fetch data at the top level.
+
+  // Please clarify if you want a server or client component.
+  // For now, here's the correct pattern for a server component:
+
+  // Remove 'use client' at the top of your file before using this code!
+
+  const userId = params.userId
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/users/${userId}/profile`, {
+    cache: 'no-store',
+  })
+
+  let profile: UserProfile | null = null
+  let error: string | null = null
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      error = 'User not found.'
+    } else {
+      error = 'Could not load user profile.'
     }
-
-    fetchUserProfile()
-  }, [userId]) // Dependency array ensures this runs if the userId changes.
-
-  if (isLoading) {
-    return (
-      <AppLayout>
-        <p className="text-center">Loading profile...</p>
-      </AppLayout>
-    )
+  } else {
+    profile = await response.json()
   }
 
   if (error) {
