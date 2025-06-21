@@ -1,28 +1,50 @@
 import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
-import { SupabaseAdapter } from '@auth/supabase-adapter'
-import type { NextAuthConfig } from 'next-auth'
+import { createClient } from '@supabase/supabase-js'
 
-export const authConfig = {
+// Your Supabase project's URL and anon key
+const supabaseUrl = process.env.SUPABASE_URL!
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    GitHub, // Assuming you want to keep GitHub sign-in
+    Credentials({
+      // You can specify which fields should be submitted, but we'll handle it in the form.
+      // credentials: { email: {}, password: {} },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
+        }
+
+        // Supabase must be initialized within the authorize function
+        // using the anon key, as this is effectively a client-side call.
+        const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+          auth: {
+            // This is crucial for Supabase to manage the user session correctly.
+            autoRefreshToken: false,
+            persistSession: false,
+          },
+        })
+
+        // Use Supabase to verify the user's credentials
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: credentials.email as string,
+          password: credentials.password as string,
+        })
+
+        if (error || !data.user) {
+          return null // Returning null triggers a credentials error
+        }
+
+        // If the user is authenticated, return the user object.
+        // NextAuth will then create a session.
+        return data.user
+      },
     }),
   ],
-  adapter: SupabaseAdapter({
-    url: process.env.SUPABASE_URL!,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  }),
-  callbacks: {
-    session({ session, user }) {
-      // Add the user's ID to the session object for server-side access
-      if (session.user) {
-        session.user.id = user.id
-      }
-      return session
-    },
-  },
-} satisfies NextAuthConfig
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
+  // You might have an adapter here if you are using one.
+  // If you are using the Supabase adapter, make sure it's configured correctly.
+  // e.g., adapter: SupabaseAdapter({ ... }),
+})
