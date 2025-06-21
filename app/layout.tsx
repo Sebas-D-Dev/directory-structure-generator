@@ -1,17 +1,13 @@
 import 'css/tailwind.css'
+import type { Metadata } from 'next';
 import { Space_Grotesk } from 'next/font/google'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
 import { ThemeProviders } from './theme-providers'
 import Providers from './providers'
-import { Metadata } from 'next'
 
-const space_grotesk = Space_Grotesk({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-space-grotesk',
-})
+const space_grotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
 
 // NEW: Updated metadata to reflect the collaboration platform's identity.
 export const metadata: Metadata = {

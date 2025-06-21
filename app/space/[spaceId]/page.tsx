@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useAblyChannel } from '@/hooks/useAbly' // Assuming this hook exists
+import { useAblyChannel } from '@/hooks/useAbly'
 import WorkspaceSettings from '@/components/WorkspaceSettings'
 import AppLayout from '@/layouts/AppLayout'
 
@@ -20,6 +20,20 @@ interface Workspace {
  * The main collaboration page for a single workspace.
  * It now fetches workspace details to control settings visibility.
  */
+/**
+ * Renders the workspace page for a given space, handling authentication, real-time collaboration,
+ * and workspace settings.
+ *
+ * - Fetches the Ably token for real-time updates and the workspace details on mount.
+ * - Redirects unauthenticated users to the home page.
+ * - Displays loading and error states as appropriate.
+ * - Integrates real-time collaboration via a custom Ably channel hook.
+ * - Allows the workspace owner to access workspace settings.
+ *
+ * @param params - Route parameters containing the `spaceId` of the workspace.
+ * @returns The workspace page layout, including a collaborative directory editor and settings panel.
+ */
+
 export default function SpacePage({ params }: { params: { spaceId: string } }) {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -117,14 +131,4 @@ export default function SpacePage({ params }: { params: { spaceId: string } }) {
     </AppLayout>
   )
 }
-/**
- * Type helper to ensure the params object is typed as a Promise if needed.
- * This is not standard for Next.js page components, but if you want to enforce
- * Promise in the parameters, you can wrap the props in a Promise type.
- */
-export type SpacePageParams = Promise<{ params: { spaceId: string } }>
-/*
-**Important Note:** The code above assumes a new 'GET' endpoint exists at 'app/api/workspaces/[workspaceId]/route.ts' to fetch the details of a single workspace. You will need to create this endpoint. It will be very similar to the 'PATCH' endpoint, but it will perform a 'select()' query instead of an 'update()' and won't require a request body.
 
-This integration completes the feature. Now, a workspace owner can visit their workspace, see the settings panel, and toggle the public visibility. The change is saved securely to the database.
-*/

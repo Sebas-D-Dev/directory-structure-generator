@@ -1,11 +1,6 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import AppLayout from '@/layouts/AppLayout'
-import { createClient } from '@supabase/supabase-js'
-import { auth } from '@/auth'
 
 // Define the shape of the data we expect from our profile API.
 interface ProfileWorkspace {
@@ -24,28 +19,7 @@ interface UserProfile {
 /**
  * The public profile page for a single user, showcasing their public workspaces.
  */
-export default async function UserProfilePage({ params }: { params: { userId: string } }): Promise<JSX.Element> {
-  // This is a client component, so it should not be async.
-  // To comply with Next.js 15 and React rules, convert this to a server component
-  // or move all async logic into useEffect as before.
-
-  // If you want to keep this as a client component, do NOT use async here.
-  // If you want to use async/await at the top level, make this a server component (remove 'use client').
-
-  // For client components, keep:
-  // export default function UserProfilePage({ params }: { params: { userId: string } }) { ... }
-
-  // For server components (Next.js 15+), you can use:
-  // export default async function UserProfilePage({ params }: { params: { userId: string } }) { ... }
-
-  // If you want to keep this as a client component, use the previous code block you provided.
-  // If you want to convert to a server component, remove 'use client' and fetch data at the top level.
-
-  // Please clarify if you want a server or client component.
-  // For now, here's the correct pattern for a server component:
-
-  // Remove 'use client' at the top of your file before using this code!
-
+export default async function UserProfilePage({ params }: { params: { userId: string } }) {
   const userId = params.userId
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/users/${userId}/profile`, {
@@ -114,23 +88,19 @@ export default async function UserProfilePage({ params }: { params: { userId: st
                     href={`/space/${workspace.id}`}
                     className="block hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
-                    <div className="px-4 py-4 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <p className="truncate text-sm font-medium text-blue-600 dark:text-blue-400">
-                          {workspace.name}
+                    <div className="px-4 py-4 sm:px-6 flex items-center gap-4">
+                      <Image
+                        src={profile.image && profile.image.trim() !== '' ? profile.image : `https://source.boringavatars.com/beam/120/${profile.id}`}
+                        alt={`${profile.name}'s avatar`}
+                        width={48}
+                        height={48}
+                        className="rounded-full bg-gray-300 shadow-md"
+                      />
+                      <div>
+                        <p className="text-lg font-medium text-gray-900 dark:text-white">{workspace.name}</p>
+                        <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                          Last updated on {new Date(workspace.updatedAt).toLocaleDateString('en-US')}
                         </p>
-                        <div className="ml-2 flex flex-shrink-0">
-                          <p className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800 dark:bg-green-900 dark:text-green-100">
-                            Public
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-2 sm:flex sm:justify-between">
-                        <div className="sm:flex">
-                          <p className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                            Last updated on {new Date(workspace.updatedAt).toLocaleDateString()}
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </Link>
