@@ -6,14 +6,15 @@ import { useEffect, useState } from 'react'
 import { useAblyChannel } from '@/hooks/useAbly'
 import WorkspaceSettings from '@/components/WorkspaceSettings'
 import AppLayout from '@/layouts/AppLayout'
+import { use } from 'react'
 
 // Expand the Workspace interface to include all necessary fields
 interface Workspace {
   id: string
   name: string
-  content: string
-  isPublic: boolean
   ownerId: string
+  isPublic: boolean
+  // Add other fields as needed
 }
 
 /**
@@ -34,17 +35,16 @@ interface Workspace {
  * @returns The workspace page layout, including a collaborative directory editor and settings panel.
  */
 
-export default function SpacePage({ params }: { params: { spaceId: string } }) {
+export default function SpacePage({ params }: { params: Promise<{ spaceId: string }> }) {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { spaceId } = use(params)
 
   // State for the workspace data and the Ably token
   const [workspace, setWorkspace] = useState<Workspace | null>(null)
   const [ablyToken, setAblyToken] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  const spaceId = params.spaceId
 
   // Custom hook for Ably real-time functionality
   const collaboration = useAblyChannel(spaceId, ablyToken ?? '')
