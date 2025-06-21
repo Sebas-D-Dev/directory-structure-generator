@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 interface TableWrapperProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const TableWrapper = ({ children }: TableWrapperProps) => {

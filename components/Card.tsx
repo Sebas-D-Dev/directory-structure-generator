@@ -59,7 +59,7 @@ function Card({ title, description, imgSrc, href }: CardProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default Card
