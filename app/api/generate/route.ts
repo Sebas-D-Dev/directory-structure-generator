@@ -1,4 +1,3 @@
-// route.ts
 import { GoogleGenerativeAI } from '@google/genai';
 import { NextResponse } from 'next/server';
 
@@ -8,11 +7,12 @@ import { NextResponse } from 'next/server';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 /**
- * Handles POST requests to generate content using the Gemini API and streams the response.
+ * Handles POST requests to generate content using the Gemini API.
  * @param {Request} request The incoming request object, expecting a JSON body with a 'prompt' property.
- * @returns {Response} A streaming response with the generated text or a JSON error.
+ * @returns {Response} A JSON response containing the generated text or an error.
  */
 export async function POST(request: Request) {
+  // 1. Check for API key
   if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json(
       { error: 'API key not configured.' },
@@ -21,32 +21,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    // 2. Get the prompt from the request body.
     const { prompt } = await request.json();
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required.' }, { status: 400 });
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    const result = await model.generateContentStream(prompt);
+    // 3. Select the Gemini model.
+    // 'gemini-1.5-flash' is a great, fast model for general tasks.
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    // Create a ReadableStream to send the response as it's generated.
-    const stream = new ReadableStream({
-      async start(controller) {
-        const encoder = new TextEncoder();
-        for await (const chunk of result.stream) {
-          const text = chunk.text();
-          controller.enqueue(encoder.encode(text));
-        }
-        controller.close();
-      },
-    });
+    // 4. Generate the content.
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
 
-    // Return the stream as the response.
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-      },
-    });
+    // 5. Send the generated text back to the client.
+    return NextResponse.json({ text });
   } catch (error) {
     console.error('Gemini API error:', error);
     return NextResponse.json(

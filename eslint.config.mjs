@@ -5,7 +5,11 @@ import a11yPlugin from 'eslint-plugin-jsx-a11y'
 
 const compat = new FlatCompat()
 
-module.exports = [
+export default [
+  {
+    // Add files to ignore here. This solves the "module is not defined" error for config files.
+    ignores: ['tailwind.config.js', 'postcss.config.js'],
+  },
   ...compat.extends('next/core-web-vitals'),
   {
     plugins: {
@@ -29,7 +33,6 @@ module.exports = [
       '@typescript-eslint/no-unused-vars': 'off',
       'react/no-unescaped-entities': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
     },
   },
