@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   /* Font families */
   --font-sans:
@@ -116,23 +112,30 @@
 }
 
 .task-list-item::before {
-  @apply hidden;
+  display: none;
 }
 
 .task-list-item {
-  @apply list-none;
+  list-style-type: none;
 }
 
 .footnotes {
-  @apply mt-12 border-t border-gray-200 pt-8 dark:border-gray-700;
+  margin-top: 3rem; /* mt-12 */
+  border-top: 1px solid var(--color-gray-200, #e5e7eb); /* border-t border-gray-200 */
+  padding-top: 2rem; /* pt-8 */
+}
+
+.dark .footnotes {
+  border-top: 1px solid var(--color-gray-700, #374151); /* border-gray-700 */
 }
 
 .data-footnote-backref {
-  @apply no-underline;
+  text-decoration: none; /* no-underline */
 }
 
 .csl-entry {
-  @apply my-5;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem; /* my-5 */
 }
 
 .no-scrollbar::-webkit-scrollbar {

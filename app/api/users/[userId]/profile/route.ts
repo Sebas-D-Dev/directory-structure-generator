@@ -1,16 +1,18 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
-/**
- * Handles GET requests to fetch a user's public profile,
- * which includes their public details and a list of their public workspaces.
- */
-export async function GET(request: Request, context: { params: { userId: string } }) {
+// Define the type for the route parameters
+interface RouteParams {
+  userId: string
+}
+
+// The second argument to the GET function is an object containing 'params'.
+// We explicitly type 'params' using our defined interface.
+export async function GET(request: Request, { params }: { params: RouteParams }) {
   // CORRECT: Initialize the client inside the handler for serverless compatibility.
   const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-  const { userId } = context.params
-
+  const { userId } = params // Access userId directly from the destructured params
   if (!userId) {
     return NextResponse.json({ error: 'User ID is required.' }, { status: 400 })
   }
