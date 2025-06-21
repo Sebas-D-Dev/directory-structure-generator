@@ -38,4 +38,13 @@ module.exports = {
   // collectCoverage: true, // Collect test coverage information.
   // coverageDirectory: 'coverage', // Directory to output coverage reports.
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'], // Path to a setup file that runs before each test.
+
+  // The test environment that will be used for testing.
+  // 'node' is suitable for backend/API route testing.
+  testEnvironment: 'node',
+
+  // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module.
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
 }

@@ -1,57 +1,66 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth';
 
-// Define the type for the route parameters
-interface RouteParams {
-  userId: string
-}
+// This API route handles user profile updates.
+export async function PATCH(request: Request, { params }: { params: { userId: string } }) {
+  const { userId } = params;
 
-// The second argument to the GET function is an object containing 'params'.
-// We explicitly type 'params' using our defined interface.
-export async function GET(request: Request, { params }: { params: RouteParams }) {
-  // CORRECT: Initialize the client inside the handler for serverless compatibility.
-  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+  // Initialize the Supabase client
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  const { userId } = params // Access userId directly from the destructured params
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID is required.' }, { status: 400 })
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return NextResponse.json({ error: 'Supabase environment variables are not set.' }, { status: 500 });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  // Get the current user's session
+  const session = await auth();
+
+  if (!session || !session.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  let body: any;
+  try {
+    body = await request.json();
+  } catch (err) {
+    // Log generic error message instead of error details
+    console.error('Invalid JSON in request body.');
+    return NextResponse.json({ error: 'Invalid JSON in request body.' }, { status: 400 });
+  }
+
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Request body must be a valid JSON object.' }, { status: 400 });
+  }
+
+  const { name, bio } = body;
+
+  if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    return NextResponse.json({ error: 'Name is required.' }, { status: 400 });
   }
 
   try {
-    // 1. Fetch the user's public information and their public workspaces in a single query.
-    // Supabase's foreign key relationships allow us to nest the workspace query.
-    const { data: userProfile, error } = await supabase
+    // Update the user's profile in the database
+    const { data, error } = await supabase
       .from('users')
-      .select(
-        `
-        id,
-        name,
-        image,
-        workspaces (
-          id,
-          name,
-          updatedAt
-        )
-      `
-      )
+      .update({ name, bio })
       .eq('id', userId)
-      .eq('workspaces.isPublic', true) // Filter the nested workspaces to only include public ones.
-      .single()
+      .select()
+      .single();
 
-    if (error || !userProfile) {
-      console.error('Supabase profile fetch error:', error)
-      return NextResponse.json({ error: 'User profile not found.' }, { status: 404 })
+    if (error) {
+      // Log generic error message instead of error details
+      console.error('Supabase PATCH error occurred.');
+      return NextResponse.json({ error: 'Failed to update profile.' }, { status: 500 });
     }
 
-    // The query returns all workspaces linked to the user, but some might be private.
-    // We must manually filter here if the `.eq('workspaces.isPublic', true)`
-    // is not supported in the nested query syntax of your Supabase version or setup.
-    // The provided query is the ideal state.
-
-    // 2. Return the combined profile data.
-    return NextResponse.json(userProfile)
+    return NextResponse.json(data, { status: 200 });
   } catch (e) {
-    console.error('Unexpected profile fetch error:', e)
-    return NextResponse.json({ error: 'An unexpected error occurred.' }, { status: 500 })
+    // Log only the error message to avoid exposing sensitive information
+    console.error('Unexpected PATCH error:', (e instanceof Error ? e.message : e));
+    return NextResponse.json({ error: 'An unexpected error occurred.' }, { status: 500 });
   }
 }
