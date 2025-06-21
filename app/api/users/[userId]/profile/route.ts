@@ -5,11 +5,11 @@ import { NextResponse } from 'next/server'
  * Handles GET requests to fetch a user's public profile,
  * which includes their public details and a list of their public workspaces.
  */
-export async function GET(request: Request, { params }: { params: { userId: string } }) {
+export async function GET(request: Request, context: { params: { userId: string } }) {
   // CORRECT: Initialize the client inside the handler for serverless compatibility.
   const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-  const { userId } = params
+  const { userId } = context.params
 
   if (!userId) {
     return NextResponse.json({ error: 'User ID is required.' }, { status: 400 })
