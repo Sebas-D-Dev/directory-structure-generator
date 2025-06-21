@@ -2,14 +2,22 @@ import { createClient } from '@supabase/supabase-js'
 import { auth } from '@/auth'
 
 /**
+ * Defines the shape of the route parameters for dynamic segments.
+ */
+interface RouteParams {
+  workspaceId: string;
+}
+
+/**
  * Handles GET requests to fetch a single workspace by its ID.
  * This endpoint has special logic to handle public vs. private workspaces.
  */
-export async function GET(request: Request, { params }: { params: { workspaceId: string } }) {
-  // CORRECT: Initialize the client inside the handler for serverless compatibility.
-  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+export async function GET(request: Request, { params }: { params: Promise<RouteParams> }) {
+  const { workspaceId } = await params;
 
-  const { workspaceId } = params
+  // Initialize the client inside the handler for serverless compatibility.
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
   const session = await auth() // CORRECT: Use the new `auth()` helper
   const userId = session?.user?.id
 
@@ -43,16 +51,17 @@ export async function GET(request: Request, { params }: { params: { workspaceId:
  * Handles PATCH requests to update a specific workspace.
  * This is used to change properties like the 'isPublic' status.
  */
-export async function PATCH(request: Request, { params }: { params: { workspaceId: string } }) {
-  // CORRECT: Initialize the client inside the handler.
-  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+export async function PATCH(request: Request, { params }: { params: Promise<RouteParams> }) {
+  const { workspaceId } = await params;
 
-  const session = await auth() // CORRECT: Use the new `auth()` helper
+  // Initialize the client inside the handler.
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const session = await auth(); // CORRECT: Use the new `auth()` helper
   if (!session || !session.user?.id) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
   const userId = session.user.id
-  const { workspaceId } = params
 
   let isPublic: boolean
   try {
