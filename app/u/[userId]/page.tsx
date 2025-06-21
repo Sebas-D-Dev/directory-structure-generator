@@ -95,7 +95,7 @@ export default function UserProfilePage({ params }: { params: { userId: string }
             className="rounded-full bg-gray-300 shadow-md"
           />
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {profile.name}'s Profile
+            {profile.name}&apos;s Profile
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
             Showcasing {profile.workspaces.length} public workspace(s).

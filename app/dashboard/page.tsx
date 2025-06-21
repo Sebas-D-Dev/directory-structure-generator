@@ -143,8 +143,10 @@ export default function DashboardPage() {
             </ul>
             {workspaces.length === 0 && (
               <div className="py-12 text-center">
-                <p className="text-gray-500">You haven't created any workspaces yet.</p>
-                <p className="mt-1 text-sm text-gray-500">Click "New Workspace" to get started.</p>
+                <p className="text-gray-500">You haven&apos;t created any workspaces yet.</p>
+                <p className="mt-1 text-sm text-gray-500">
+                  Click &quot;New Workspace&quot; to get started.
+                </p>
               </div>
             )}
           </div>
