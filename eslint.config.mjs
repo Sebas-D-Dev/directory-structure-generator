@@ -7,7 +7,7 @@ import prettierConfig from 'eslint-config-prettier'
 
 const compat = new FlatCompat()
 
-export default [
+const config = [
   {
     // Add files to ignore here. This solves the "module is not defined" error for config files.
     ignores: ['tailwind.config.js', 'postcss.config.js'],
@@ -20,24 +20,8 @@ export default [
       'jsx-a11y': a11yPlugin,
       prettier: prettierPlugin,
     },
-    rules: {
-      'prettier/prettier': 'error',
-      'react/react-in-jsx-scope': 'off',
-
-      'jsx-a11y/anchor-is-valid': [
-        'error',
-        {
-          components: ['Link'],
-          specialLink: ['hrefLeft', 'hrefRight'],
-          aspects: ['invalidHref', 'preferButton'],
-        },
-      ],
-      'react/prop-types': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      'react/no-unescaped-entities': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
-    },
   },
   prettierConfig,
-]
+];
+
+export default config;
