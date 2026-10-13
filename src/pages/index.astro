@@ -1,0 +1,28 @@
+---
+import GuideWorkspace from '../components/GuideWorkspace';
+import { content } from '../content/foundation';
+import '../styles/global.css';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Understand why files and folders belong where they do. Explore a source-backed, guest-first guide to repository structure." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Repository Structure Guide · Start with a reason</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><a class="brand" href="/" aria-label="Repository Structure Guide home"><span class="brand-mark" aria-hidden="true">r/</span><span>Repository<br />Structure Guide</span></a><nav aria-label="Main navigation"><a href="#project-types">Project types</a><a href="#examples">Examples</a><a href="#rename-lab">Try a rename</a><a href="#sources">Sources</a></nav><span class="release-tag">Visual checkpoint · 02</span></header>
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title"><div class="hero-copy"><span class="eyebrow">A FIELD GUIDE TO THE FILES BETWEEN IDEAS AND SOFTWARE</span><h1 id="page-title">A good structure<br />starts with <em>a reason.</em></h1><p>Learn what belongs where, what a tool actually requires, and when a simpler arrangement is enough.</p><a class="primary hero-cta" href="#examples">Explore the collection <span aria-hidden="true">↗</span></a><p class="hero-note">No account. Five examples. Three languages.</p></div><div class="hero-diagram" aria-label="A file connects to its purpose, naming rule, and alternatives"><div class="diagram-file"><span aria-hidden="true">▤</span><code>main.go</code><small>A file is a decision.</small></div><div class="diagram-reasons"><span>01 <strong>Purpose</strong> What does it do?</span><span>02 <strong>Rule</strong> Who requires it?</span><span>03 <strong>Alternative</strong> What else could work?</span></div><p>Inspect the reasoning,<br />not just the tree.</p></div></section>
+      <div class="foundation-note"><strong>An early, source-reviewed foundation.</strong><span>Original teaching diagrams, a rename lab, and a deeper Go walkthrough. Runtime experiments, persistence, and learner studies are still ahead.</span></div>
+      <noscript><div class="notice">JavaScript is off. You can read the default example and sources below. Filtering, the rename lab, selecting other nodes, comparisons, and exports need JavaScript.</div></noscript>
+      <GuideWorkspace client:load />
+      <section class="sources-section" id="sources" aria-labelledby="sources-heading"><div class="section-heading"><span class="step">THE RESEARCH TRAIL</span><h2 id="sources-heading">Claims you can follow.</h2><p>Tool behavior, maintainer guidance, and this guide’s own choices are different kinds of evidence.</p></div><div class="source-list">{content.sources.map((source) => <article><span class="eyebrow">{source.publisher}</span><h3><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗<span class="sr-only"> (opens in a new tab)</span></a></h3><p>{source.section}</p><small>{source.version}<br />Checked {source.checkedAt} · Review after {source.reviewAfter}</small></article>)}</div><p class="small muted">Content revision {content.contentVersion}. Initial source review completed; independent lesson approval and runtime experiment reproduction are release gates. Mutable references may change after review.</p></section>
+    </main>
+    <footer><p><strong>Repository Structure Guide</strong><br />A working title. A reasoned starting point.</p><p>Static guest experience. Selections stay in memory on this device.<br />Hosting requests may be logged by the hosting provider.</p></footer>
+  </body>
+</html>
