@@ -158,7 +158,7 @@
   .flow-file-list li button { display:block;text-align:left;width:100%;min-height:64px;padding:12px;border:1px solid #d4d1c6;border-radius:7px;background:#faf9f5;color:var(--ink); }
   .flow-file-list li button[aria-pressed=true] { background:#e1eae5;border-color:#638b7d;box-shadow:inset 3px 0 #366d5c; }
   .flow-file-list code { display:block;font:.76rem/1.6 monospace;overflow-wrap:anywhere; }
-  .flow-file-list li span { display:block;margin-top:4px;font-size:.66rem;color:#595b51; }
+  .flow-file-list li button > span { display:block;margin-top:4px;font-size:.66rem;color:#595b51; }
   .flow-file-list .text-button { display:flex;font-size:.76rem;min-height:48px; }
   .flow-file-inspector { padding:28px;min-width:0; }
   .flow-file-inspector > h3 { font:1.2rem/1.5 monospace;overflow-wrap:anywhere;margin:16px 0 12px; }

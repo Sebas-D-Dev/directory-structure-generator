@@ -89,6 +89,8 @@ test('320px touch and pointer paths keep source explanations reachable without o
   await expect(flow.locator('#flow-file-heading')).toBeFocused();
   const basename = flow.locator('#flow-file-heading .flow-path-part').last();
   await expect(basename).toHaveText('TopicPicker.tsx');
+  const fileButtonName = flow.locator('.flow-file-list code .flow-path-part').first();
+  expect(await fileButtonName.evaluate((element) => getComputedStyle(element).display)).toBe('inline');
   expect(await basename.evaluate((element) => getComputedStyle(element).whiteSpace)).toBe('nowrap');
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await flow.screenshot({path:testInfo.outputPath('astro-flow-narrow.png'),animations:'disabled'});
