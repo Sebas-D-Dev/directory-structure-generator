@@ -79,7 +79,7 @@ export default function AstroPageFlow() {
     <div className="flow-file-workspace">
       <section className="flow-file-list" aria-label="Files in the Astro illustration">
         <p className="eyebrow">LINEAR FILE OUTLINE</p><p className="small">Six explained files. Generated output is labeled separately.</p>
-        <ul>{astroFlow.files.map((item) => <li key={item.id}><button aria-pressed={fileId === item.id} aria-controls="flow-file-inspector" onClick={() => chooseFile(item.id)}><code><SourcePath path={item.path} /></code><span>{item.kind}{selected.fileIds.includes(item.id) ? ' · Connected to this step' : ''}</span></button></li>)}</ul>
+        <ul>{astroFlow.files.map((item) => <li key={item.id}><button aria-label={`${item.path}. ${item.kind}${selected.fileIds.includes(item.id) ? ". Connected to this step" : ""}`} aria-pressed={fileId === item.id} aria-controls="flow-file-inspector" onClick={() => chooseFile(item.id)}><code><SourcePath path={item.path} /></code><span>{item.kind}{selected.fileIds.includes(item.id) ? ' · Connected to this step' : ''}</span></button></li>)}</ul>
         <button className="text-button" onClick={() => fileHeading.current?.focus()}>Read file explanation →</button>
         <button className="text-button" onClick={() => explanationHeading.current?.focus()}>Read connected step →</button>
       </section>
