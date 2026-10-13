@@ -70,3 +70,9 @@ Remaining verification includes independent visual/assistive-technology review, 
 - Full checkpoint acceptance, release audience, additional lesson/fixture licensing, and public launch approval
 
 The existing LICENSE and historical Git source remain intact. At the initial local checkpoint no remote changes had been made. On 2026-10-13 the owner subsequently authorized a review-branch push, a new PR, ordinary preview effects, and closing the obsolete dependency PR. Main merge, production publication, and a development branch after verified publication remain separate gated steps. No service disconnection or credential changes were performed through this PR; the owner separately reported disconnecting the obsolete Supabase resource connection.
+
+## Visual/source checkpoint addition
+
+The next review adds five original illustrative cards (three language labels and five project types), context-sensitive language/type filters, source-specific link-only provenance, and a two-case Go filename simulation. See [content provenance](content-provenance.md) for scope. No dependency or hosting-protection changes were needed. The foundation content/export version remains unchanged; the new catalog has its own revision.
+
+Supplementary checks in the resumed local environment (Node 24.19.0/npm 11.9.0) on 2026-10-13 passed 39 unit/content tests, type validation, both content registries, static build and CSP/hash artifact checks; npm audit reported zero vulnerabilities. The required Node 24.21.0/npm 12.2.0 baseline is verified separately in CI. The final commit’s CI and Vercel outcomes are recorded on PR #2 rather than generating a new commit for every status update. Browser coverage is expanded to desktop/mobile filter and rename flows, keyboard/focus, reduced motion, export regressions, and local-only layout captures for visual inspection. No Go runtime experiment or broad accessibility-conformance pass is implied.

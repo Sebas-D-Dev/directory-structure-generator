@@ -6,7 +6,7 @@ test('guest can inspect, preview/cancel, change options, undo, and export', asyn
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await expect(page.getByRole('heading', {level: 1})).toHaveText(/A good structure/);
-  await expect(page.getByRole('heading', {name: 'main.go', exact: true})).toBeVisible();
+  await expect(page.locator('#inspector-heading')).toBeVisible();
   await page.getByRole('button', {name: 'go.mod', exact: false}).click();
   await expect(page.locator('#inspector-heading')).toHaveText('go.mod');
   await page.getByRole('button', {name: 'Read selected explanation'}).click();
@@ -78,8 +78,9 @@ test('static build uses local resources and enforces generated CSP', async ({pag
 test('Tab visits every default node and folder disclosure responds to the keyboard', async ({page}) => {
   await page.goto('/');
   const visited = new Set<string>();
-  for (let index = 0; index < 55 && visited.size < 6; index++) {
-    await page.keyboard.press('Tab');
+  await page.locator('.tree-panel .node-button').first().focus();
+  for (let index = 0; index < 20 && visited.size < 6; index++) {
+    if (index > 0) await page.keyboard.press('Tab');
     const node = await page.evaluate(() => {
       const active = document.activeElement;
       return active?.classList.contains('node-button') ? active.textContent : null;

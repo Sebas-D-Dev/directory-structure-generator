@@ -7,7 +7,10 @@ A guest-first educational guide to **why files and folders belong where they do*
 ## What is implemented
 
 - Plain-language descriptions of six project capabilities, with honest feedback for combinations outside the authored curriculum
-- One illustrative Go photo-renaming CLI lesson with two layout options
+- Five original teaching cards: Go CLI, Astro web app, FastAPI backend, Python data analysis, and Python library
+- Language/project-type filters with result counts, reset and empty-state recovery
+- A two-case Go rename-and-explain simulation with preview, cancel, apply and undo
+- One deeper illustrative Go photo-renaming CLI lesson with two layout options
 - A keyboard-accessible native disclosure outline and a linear alternative
 - Node explanations covering purpose, names, locations, contents, alternatives, boundaries, costs, and change triggers
 - Claim-level sources and explicit distinctions between tool rules, conventions, and the guide's judgment
@@ -15,11 +18,11 @@ A guest-first educational guide to **why files and folders belong where they do*
 - Deterministic text tree/rationale and versioned JSON-record downloads
 - Strict typed content contracts, build-time content validation, unit tests, browser checks, and a CI workflow
 
-The lesson is a **source-reviewed draft**. Its Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
+The collection and lesson are **source-reviewed drafts**. The rename lab is a documentation-based simulation, not a Go runtime experiment. Its state is separate from the layout workspace and is not included in layout exports. Its Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
 
 ## Deliberately not implemented
 
-No login, authentication, collaborative workspaces, backend API, database, AI/model calls, telemetry, repository connections, or uploaded files. No photo files are read or changed. Shared editing is a later product decision.
+No application login, authentication, collaborative workspaces, backend API, database, AI/model calls, telemetry, remote repository imports, or uploaded files. No photo files are read or changed. Shared editing is a later product decision.
 
 This checkpoint is memory-only: choices reset on reload. Persistent local saves, concurrent-tab behavior, JSON restore, arbitrary editing, full requirement-driven transformations, broader curriculum, and learner research remain future work. The interface and exports disclose these limits.
 
