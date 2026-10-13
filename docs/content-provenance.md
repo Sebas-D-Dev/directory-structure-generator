@@ -25,3 +25,7 @@ Before reproducing anything, pin the exact upstream revision and paths, inspect 
 Native selects implement single-choice facets with AND across language/type. Counts and empty states stay visible; Clear filters resets both. Native details make consequences and provenance available by keyboard and touch. Hover only enhances card borders/shadows; it reveals no exclusive information.
 
 The rename reveal uses one 180ms opacity/transform transition, with no recurring animation. Reduced-motion preferences disable animation, transitions and smooth scrolling without hiding information. Automated tests cover filters, reset, invalid input, case switching, preview/cancel/apply/undo, reload, keyboard navigation and reduced-motion. CI validates the final branch commit; the PR records its exact results. Visual review and automated behavior checks are distinct from WCAG conformance or real-device performance measurements.
+
+## Astro page journey development increment
+
+The separate `2026.10-astro-flow.1` registry adds six fully explained files and five build/delivery steps for the Astro card. It is original illustrative content, with per-step and per-file references to official Astro docs and explicit static-output assumptions. The flow is not a network capture, executed fixture or copied template. The existing five-card catalog and Go export content versions are unchanged. See [the checkpoint record](astro-flow-checkpoint.md).

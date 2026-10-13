@@ -2,13 +2,14 @@
 
 A guest-first educational guide to **why files and folders belong where they do**. Start with project purpose, inspect a concrete example, compare a simpler layout with an alternative, and follow the evidence behind each choice.
 
-**Status: clean-rebuild foundation under review, not a finished product or an approved public release.** The working name is provisional. This branch replaces the old application implementation; Git history and the existing license remain intact.
+**Status: the initial foundation is published; the next Astro learning checkpoint is under review on development.** This is not a finished curriculum. The working name remains provisional; coordinated renaming and the specification update are reserved for a later approved main release. Git history and the existing license remain intact.
 
 ## What is implemented
 
 - Plain-language descriptions of six project capabilities, with honest feedback for combinations outside the authored curriculum
 - Five original teaching cards: Go CLI, Astro web app, FastAPI backend, Python data analysis, and Python library
 - Language/project-type filters with result counts, reset and empty-state recovery
+- A deeper Astro page journey with six explained files, five build/delivery steps, and static-versus-hydrated React comparison
 - A two-case Go rename-and-explain simulation with preview, cancel, apply and undo
 - One deeper illustrative Go photo-renaming CLI lesson with two layout options
 - A keyboard-accessible native disclosure outline and a linear alternative
@@ -18,7 +19,7 @@ A guest-first educational guide to **why files and folders belong where they do*
 - Deterministic text tree/rationale and versioned JSON-record downloads
 - Strict typed content contracts, build-time content validation, unit tests, browser checks, and a CI workflow
 
-The collection and lesson are **source-reviewed drafts**. The rename lab is a documentation-based simulation, not a Go runtime experiment. Its state is separate from the layout workspace and is not included in layout exports. Its Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
+The collection and lesson are **source-reviewed drafts**. The rename lab is a documentation-based simulation, not a Go runtime experiment. Its state and the Astro page journey are separate from the Go layout workspace and are not included in layout exports. The Astro fixture is also source-reviewed and unrun; it is not a captured build or network trace. Its Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
 
 ## Deliberately not implemented
 
@@ -78,9 +79,11 @@ Content is trusted authored data, validated before build. There is no remote-con
 
 ## Hosting and release
 
-The existing Vercel project and domain are retained. The authorized review branch now has a [successful Vercel preview](https://directory-structure-generator-git-af53ea-sebas-d-devs-projects.vercel.app), protected by Vercel SSO. `vercel.json` supplies static build settings and headers. See the [verification record](docs/verification.md) for the exact tested commit and remaining hosted checks. Production settings, served identity and release approval remain separate gates before merging main. A branch push can publish a preview automatically.
+The initial foundation was released through PR #2 at `aa04e0c21eda47523631aa59e7a5d6dbe40351a9`. Its public site is [directory-structure-generator.vercel.app](https://directory-structure-generator.vercel.app/). Main CI, Vercel publication, public content/assets/headers and key browser interactions were verified at that release. `development` began at the same commit.
 
-The noindex directive is only a search-engine hint, not access control. The existing production site stays unchanged until a separately approved release. The new guest experience needs no secrets or database. The owner separately reported disconnecting the obsolete Supabase resource connection; no credentials or databases were changed through this PR.
+This branch's newer Astro checkpoint is for review only. Main production remains on the approved release until a separately approved merge. The existing project/domain and `vercel.json` are unchanged. Branch pushes can publish protected previews automatically; CI results and preview identity belong to the exact draft-PR head. See [the Astro checkpoint](docs/astro-flow-checkpoint.md).
+
+The noindex directive is a search-engine hint, not access control. This static guest experience requires no secrets or database. No hosting permissions, service connections, credentials, GitHub/Vercel names or portfolio references are changed in this checkpoint.
 
 ## License and attribution
 

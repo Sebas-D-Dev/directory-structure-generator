@@ -11,3 +11,9 @@ import { validateCatalog } from '../src/domain/learning.ts';
 const collection = validateCatalog(catalog);
 console.log(`Valid visual catalog ${collection.version}: ${collection.examples.length} original illustrations, ${collection.sources.length} sources.`);
 console.log(`Catalog SHA-256: ${createHash('sha256').update(JSON.stringify(collection)).digest('hex')}`);
+
+import { astroFlow } from '../src/content/astro-flow.ts';
+import { validatePageFlow } from '../src/domain/page-flow.ts';
+const flow = validatePageFlow(astroFlow);
+console.log(`Valid Astro page flow ${flow.version}: ${flow.files.length} explained files, ${flow.steps.length} steps.`);
+console.log(`Page-flow SHA-256: ${createHash('sha256').update(JSON.stringify(flow)).digest('hex')}`);
