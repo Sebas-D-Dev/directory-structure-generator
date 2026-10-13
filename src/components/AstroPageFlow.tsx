@@ -1,6 +1,11 @@
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { astroFlow } from '../content/astro-flow.ts';
 import { getFlowStep, stepIndex, type PageMode } from '../domain/page-flow.ts';
+
+function SourcePath({path}: {path: string}) {
+  const segments = path.split('/');
+  return segments.map((part, index) => <Fragment key={`${index}-${part}`}><span className="flow-path-part">{part}{index < segments.length - 1 ? '/' : ''}</span>{index < segments.length - 1 && <wbr />}</Fragment>);
+}
 
 export default function AstroPageFlow() {
   const [mode, setMode] = useState<PageMode>('static');
@@ -74,12 +79,12 @@ export default function AstroPageFlow() {
     <div className="flow-file-workspace">
       <section className="flow-file-list" aria-label="Files in the Astro illustration">
         <p className="eyebrow">LINEAR FILE OUTLINE</p><p className="small">Six explained files. Generated output is labeled separately.</p>
-        <ul>{astroFlow.files.map((item) => <li key={item.id}><button aria-pressed={fileId === item.id} aria-controls="flow-file-inspector" onClick={() => chooseFile(item.id)}><code>{item.path}</code><span>{item.kind}{selected.fileIds.includes(item.id) ? ' · Connected to this step' : ''}</span></button></li>)}</ul>
+        <ul>{astroFlow.files.map((item) => <li key={item.id}><button aria-pressed={fileId === item.id} aria-controls="flow-file-inspector" onClick={() => chooseFile(item.id)}><code><SourcePath path={item.path} /></code><span>{item.kind}{selected.fileIds.includes(item.id) ? ' · Connected to this step' : ''}</span></button></li>)}</ul>
         <button className="text-button" onClick={() => fileHeading.current?.focus()}>Read file explanation →</button>
         <button className="text-button" onClick={() => explanationHeading.current?.focus()}>Read connected step →</button>
       </section>
       <section className="flow-file-inspector" id="flow-file-inspector" aria-labelledby="flow-file-heading">
-        <span className="badge neutral">{file.kind}</span><h3 id="flow-file-heading" ref={fileHeading} tabIndex={-1}>{file.path}</h3><p className="flow-file-role">{file.role}</p>
+        <span className="badge neutral">{file.kind}</span><h3 id="flow-file-heading" ref={fileHeading} tabIndex={-1}><SourcePath path={file.path} /></h3><p className="flow-file-role">{file.role}</p>
         <span className="badge">{file.nameKind}</span><h4>Why this name and location?</h4><p>{file.naming}</p>
         <h4>What belongs here</h4><ul>{file.contents.map((item) => <li key={item}>{item}</li>)}</ul>
         <details className="depth" open><summary>Alternatives and boundaries</summary><p><strong>Another viable choice:</strong> {file.alternatives}</p><p><strong>Mechanism:</strong> {file.boundary}</p><p><strong>Cost:</strong> {file.tradeoff}</p></details>

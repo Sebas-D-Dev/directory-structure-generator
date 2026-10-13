@@ -162,6 +162,7 @@
   .flow-file-list .text-button { display:flex;font-size:.76rem;min-height:48px; }
   .flow-file-inspector { padding:28px;min-width:0; }
   .flow-file-inspector > h3 { font:1.2rem/1.5 monospace;overflow-wrap:anywhere;margin:16px 0 12px; }
+  .flow-path-part { white-space:nowrap; }
   .flow-file-role { font-size:.98rem;margin-bottom:18px; }
   .flow-file-inspector h4 { font-size:.9rem;margin:14px 0 9px; }
   .flow-file-inspector p:not(.flow-file-role),.flow-file-inspector li,.flow-assumptions { font-size:.82rem; }

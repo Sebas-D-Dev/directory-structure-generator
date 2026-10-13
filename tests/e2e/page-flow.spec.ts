@@ -87,6 +87,9 @@ test('320px touch and pointer paths keep source explanations reachable without o
   await activate(flow.getByRole('button',{name:'src/components/TopicPicker.tsx',exact:false}));
   await activate(flow.getByRole('button',{name:'Read file explanation',exact:false}));
   await expect(flow.locator('#flow-file-heading')).toBeFocused();
+  const basename = flow.locator('#flow-file-heading .flow-path-part').last();
+  await expect(basename).toHaveText('TopicPicker.tsx');
+  expect(await basename.evaluate((element) => getComputedStyle(element).whiteSpace)).toBe('nowrap');
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await flow.screenshot({path:testInfo.outputPath('astro-flow-narrow.png'),animations:'disabled'});
   await activate(flow.getByRole('button',{name:'Back to the start',exact:true}));
