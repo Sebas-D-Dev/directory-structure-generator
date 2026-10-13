@@ -2,7 +2,7 @@
 
 Target: existing `directory-structure-generator` project in `sebas-d-devs-projects`, ID `prj_cHTJq4Zp01Ci1PEqRKaABtCHxkcR`, intended domain `directory-structure-generator.vercel.app`.
 
-Project existence was confirmed. Project details and deployment-history access returned 403. Account sign-in alone does not prove project access or current Git/build settings. No attempt was made to bypass that denial.
+Project existence was confirmed. The authorized review branch later triggered this retained project through the Git integration. Its [first preview attempt](https://vercel.com/sebas-d-devs-projects/directory-structure-generator/683L5UPwBBgBcbEUgMA953e7CBKU) failed before a usable preview was available. GitHub exposes only a generic error; project details and deployment-history/log access previously returned 403. Account sign-in alone does not prove project access or current production/build settings. No attempt was made to bypass that denial. The nonsecret first build error or restored intended project access is needed to diagnose the preview.
 
 ## Review-branch authorization and promotion gate
 

@@ -26,13 +26,21 @@ Lockfile SHA-256: `2f23174bdf97d33f192cb078c4a3886530890fa02ce32a4c50f5e1188ca39
 
 All emitted JavaScript totals roughly 102 KiB gzip. This is a local artifact-size measurement, not a transfer measurement, mobile timing result, or compliance claim for the proposed performance budget.
 
-## Browser checks blocked, not passed
+## Browser checks passed in GitHub Actions
 
-Playwright 1.64.0's Chromium download returned an invalid/truncated archive in this environment. The available system Chromium 154.0.8037.57 could not start: its process-singleton socket operation was not permitted. An independent reviewer hit the same restriction. The attempted eight-test desktop/mobile run failed before browser startup, not at application assertions. The suite was subsequently expanded to ten cases with focus and true Tab/disclosure regression coverage; those browser cases remain unrun.
+The [PR verification run](https://github.com/Sebas-D-Dev/directory-structure-generator/actions/runs/38428065391) completed successfully on 2026-10-13 for head `4e47088acb2b3546eab9fe06a103d2ebba2639c9` against main `fcdfe59b27c3b3dfd433cdc63621bc903b621a45`. GitHub checked out its synthetic merge commit `a11622113c3358e61dec8591f1a5c46660e3dae9`; this is test machinery, not a merge into main. The push-triggered run also passed.
 
-The supported cloud-browser route was not used to get around a previously denied localhost route. No browser screenshot, responsive visual result, browser network result, or accessibility pass is claimed. `npm run verify` therefore has **not passed end to end**.
+Runner: Ubuntu 24.04.5; Node 24.21.0; npm 12.2.0; Playwright 1.64.0; Chrome for Testing / Headless Shell 156.0.8078.4 (Chromium revision 1248). All 33 unit/content tests and all ten browser cases passed. The browser cases exercise desktop and Pixel 7-emulated Chromium: guest inspection, option preview/cancel/apply/undo and focus, text export, unsupported combinations, reload behavior, linear/nested navigation, actual Tab reachability and disclosure keyboard behavior, horizontal-overflow checks, and initial local-resource/CSP checks. Type checks, static build/content validation and audit also passed.
 
-To close this gate, run the documented browser suite in a supported development/CI environment and fix any failures. In particular, verify hydration under CSP, desktop/mobile reflow, every node's keyboard path, disclosure behavior, preview/cancel/apply/undo focus, repeated exports, unsupported combinations, reload behavior, and explicit source navigation. Inspect actual network requests and served hosting headers in an authorized preview.
+This verifies the tested automated flows. It is not a visual-design review, WCAG conformance result, real mobile-device result, Go experiment, or Vercel-hosted preview result.
+
+### Historical local environment limitation
+
+Playwright 1.64.0's Chromium download returned an invalid/truncated archive in this environment. The available system Chromium 154.0.8037.57 could not start: its process-singleton socket operation was not permitted. An independent reviewer hit the same restriction. The attempted eight-test desktop/mobile run failed before browser startup, not at application assertions. The suite was subsequently expanded to ten cases with focus and true Tab/disclosure regression coverage; they passed in the GitHub run above.
+
+The supported cloud-browser route was not used to get around a previously denied localhost route. No local browser screenshot or visual pass is claimed. The initial local `npm run verify` did not pass end to end; the subsequent GitHub run passed it in a supported runner.
+
+Remaining verification includes independent visual/assistive-technology review, the broader browser/device matrix, repeated and interrupted flows beyond current cases, and the actual hosted preview. Inspect served headers and actual network requests in that authorized preview before production.
 
 ## Review fixes covered by local regression tests or prepared browser assertions
 
@@ -48,7 +56,7 @@ To close this gate, run the documented browser suite in a supported development/
 
 - Go language/runtime experiments and independent reproduction
 - Real learners, screen readers, cross-browser/real-device tests, performance profiling
-- GitHub Actions on a remote commit and an authorized Vercel preview
+- An authorized, successful Vercel preview. The automatic preview for the first PR head failed; GitHub exposes only a generic deployment error, and prior Vercel project-log access returned 403. The first build error or restored intended access is required before diagnosing that failure
 - Hosting Git/build/visibility settings, served production identity, deployed headers, rollback rehearsal
 - Local persistence, JSON restore and their recovery tests; they are not features in this checkpoint
 - Full checkpoint acceptance, release audience, additional lesson/fixture licensing, and public launch approval
