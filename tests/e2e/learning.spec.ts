@@ -23,6 +23,7 @@ test('collection filters intersect, update counts, expose provenance and recover
   await gallery.getByLabel('Language', {exact:true}).selectOption('TypeScript');
   await gallery.getByRole('button', {name:'Clear filters'}).click();
   await expect(gallery.getByRole('button', {name:'Clear filters'})).toBeDisabled();
+  await expect(gallery.getByLabel('Language', {exact:true})).toBeFocused();
 });
 
 test('rename lab previews, cancels, applies, undoes and resets both semantic cases', async ({page}) => {
@@ -30,6 +31,7 @@ test('rename lab previews, cancels, applies, undoes and resets both semantic cas
   const lab = page.locator('#rename-lab');
   await lab.getByRole('button', {name:'Reveal naming consequence'}).click();
   await expect(lab.locator('.rename-delta')).toContainText('cli.go');
+  await expect(lab.locator('.rename-result h3')).toBeFocused();
   await expect(lab.locator('.rename-result')).toContainText('The entry point stays the same');
   await lab.getByRole('button', {name:'Cancel rename preview'}).click();
   await expect(lab.getByRole('button', {name:'Reveal naming consequence'})).toBeFocused();
@@ -108,6 +110,13 @@ test('pointer controls work at 320px, including touch on mobile and a long valid
   await expect(lab.locator('.diagram-node').first()).toContainText('an_intentionally_long');
   await activate('Undo rename');
   await expect(lab.locator('.diagram-node').first()).toContainText('main.go');
+  const tree = page.locator('#examples .mini-tree').first();
+  await tree.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect.poll(() => tree.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+  expect(await tree.evaluate((element) => getComputedStyle(element).whiteSpace)).toBe('pre');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  await page.keyboard.press('Home');
   await page.locator('#examples').screenshot({path:test.info().outputPath('narrow-collection.png'),animations:'disabled'});
   await lab.screenshot({path:test.info().outputPath('narrow-rename.png'),animations:'disabled'});
 });

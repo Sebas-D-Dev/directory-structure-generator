@@ -45,7 +45,8 @@
   .example-meta span+span { border-left:1px solid #bcb5ce;padding-left:8px;color:var(--muted); }
   .example-card h3 { font-size:1.35rem;letter-spacing:-.02em; }
   .example-card > p { font-size:.86rem;color:var(--muted);margin-top:12px; }
-  .mini-tree { white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f2f7;border:1px solid #e2dce9;border-radius:9px;padding:18px;margin:22px 0;font:.83rem/1.8 monospace;color:#443759; }
+  .mini-tree { white-space:pre;overflow-wrap:normal;overflow-x:auto;background:#f4f2f7;border:1px solid #e2dce9;border-radius:9px;padding:18px;margin:22px 0;font:.83rem/1.8 monospace;color:#443759; }
+  .example-card > .tree-scroll-hint { font-size:.7rem;margin:-12px 0 18px; }
   .naming-note h4 { font-family:monospace;margin:12px 0 8px;overflow-wrap:anywhere; }
   .naming-note p { font-size:.85rem; }
   .card-sources { font-size:.82rem; }
