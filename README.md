@@ -75,9 +75,9 @@ Content is trusted authored data, validated before build. There is no remote-con
 
 ## Hosting and release
 
-Retain the existing Vercel project and domain. Do not create a replacement project. `vercel.json` prepares static build settings and headers, but **does not establish what is currently configured or deployed**. The review branch and its ordinary automatic preview effects were authorized on 2026-10-13. Git linkage, production branch, automatic triggers, dashboard overrides, runtime, and preview visibility still need verification before promoting to main. A branch push can publish a preview automatically.
+The existing Vercel project and domain are retained. The authorized review branch now has a [successful Vercel preview](https://directory-structure-generator-git-af53ea-sebas-d-devs-projects.vercel.app), protected by Vercel SSO. `vercel.json` supplies static build settings and headers. See the [verification record](docs/verification.md) for the exact tested commit and remaining hosted checks. Production settings, served identity and release approval remain separate gates before merging main. A branch push can publish a preview automatically.
 
-The noindex directive is only a search-engine hint, not access control. The existing production site stays unchanged until a separately approved release. The new guest experience needs no secrets; existing Vercel variables and legacy services have not been deleted or disconnected.
+The noindex directive is only a search-engine hint, not access control. The existing production site stays unchanged until a separately approved release. The new guest experience needs no secrets or database. The owner separately reported disconnecting the obsolete Supabase resource connection; no credentials or databases were changed through this PR.
 
 ## License and attribution
 

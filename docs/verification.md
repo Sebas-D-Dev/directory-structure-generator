@@ -34,6 +34,14 @@ Runner: Ubuntu 24.04.5; Node 24.21.0; npm 12.2.0; Playwright 1.64.0; Chrome for 
 
 This verifies the tested automated flows. It is not a visual-design review, WCAG conformance result, real mobile-device result, Go experiment, or Vercel-hosted preview result.
 
+### Successful Vercel retry
+
+On 2026-10-13, after the owner reported removing the obsolete Supabase resource connection, empty retry commit `e3a14baa679e9ec647eeb7abaaf99c5408ed213f` retained exactly the source tree of `139a806eeb05693121ee073d81a766760c022db7`. Both its [PR verification](https://github.com/Sebas-D-Dev/directory-structure-generator/actions/runs/38443177629) and [push verification](https://github.com/Sebas-D-Dev/directory-structure-generator/actions/runs/38443169277) completed successfully.
+
+Vercel reported the [retry deployment Ready](https://vercel.com/sebas-d-devs-projects/directory-structure-generator/9x4tbAiGxo1Z9p6rPqDkuFLVrEg6). Its [branch preview](https://directory-structure-generator-git-af53ea-sebas-d-devs-projects.vercel.app) redirects unauthenticated requests to Vercel SSO, so deployment success is verified but hosted interactive behavior and served application headers remain unverified. The platform protection was not disabled or bypassed. The reported resource disconnection was not independently inspected. No application database is required for local fixture-based testing.
+
+These run links are evidence for the named commit; later commits must pass their own checks before merge.
+
 ### Historical local environment limitation
 
 Playwright 1.64.0's Chromium download returned an invalid/truncated archive in this environment. The available system Chromium 154.0.8037.57 could not start: its process-singleton socket operation was not permitted. An independent reviewer hit the same restriction. The attempted eight-test desktop/mobile run failed before browser startup, not at application assertions. The suite was subsequently expanded to ten cases with focus and true Tab/disclosure regression coverage; they passed in the GitHub run above.
@@ -56,9 +64,9 @@ Remaining verification includes independent visual/assistive-technology review, 
 
 - Go language/runtime experiments and independent reproduction
 - Real learners, screen readers, cross-browser/real-device tests, performance profiling
-- An authorized, successful Vercel preview. The automatic preview for the first PR head failed; GitHub exposes only a generic deployment error, and prior Vercel project-log access returned 403. The first build error or restored intended access is required before diagnosing that failure
+- Hosted interactive and header verification inside the protected Vercel preview; deployment itself is Ready as recorded above
 - Hosting Git/build/visibility settings, served production identity, deployed headers, rollback rehearsal
 - Local persistence, JSON restore and their recovery tests; they are not features in this checkpoint
 - Full checkpoint acceptance, release audience, additional lesson/fixture licensing, and public launch approval
 
-The existing LICENSE and historical Git source remain intact. At the initial local checkpoint no remote changes had been made. On 2026-10-13 the owner subsequently authorized a review-branch push, a new PR, ordinary preview effects, and closing the obsolete dependency PR. Main merge, production publication, and a development branch after verified publication remain separate gated steps. Service disconnection and credential changes remain excluded.
+The existing LICENSE and historical Git source remain intact. At the initial local checkpoint no remote changes had been made. On 2026-10-13 the owner subsequently authorized a review-branch push, a new PR, ordinary preview effects, and closing the obsolete dependency PR. Main merge, production publication, and a development branch after verified publication remain separate gated steps. No service disconnection or credential changes were performed through this PR; the owner separately reported disconnecting the obsolete Supabase resource connection.
