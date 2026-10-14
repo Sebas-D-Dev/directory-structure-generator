@@ -8,7 +8,7 @@ test('collection filters intersect, update counts, expose provenance and recover
   await expect(gallery.locator('.example-card')).toHaveCount(3);
   await gallery.getByLabel('Project type', {exact:true}).selectOption('Library');
   await expect(gallery.locator('.example-card')).toHaveCount(1);
-  await expect(gallery.getByRole('option', {name:'All languages · 1 example', exact:true})).toBeAttached();
+  await expect(gallery.getByLabel('Language', {exact:true}).getByRole('option', {name:'All · 1 example', exact:true})).toBeAttached();
   await expect(gallery.getByRole('status')).toContainText('1 of 5');
   await gallery.getByText('Consequences and sources', {exact:true}).click();
   await expect(gallery.getByText('Package discovery still needs', {exact:false})).toBeVisible();
@@ -113,6 +113,14 @@ test('pointer controls work at 320px, including touch on mobile and a long valid
   await expect(lab.locator('.diagram-node').first()).toContainText('main.go');
   await lab.screenshot({path:test.info().outputPath('narrow-rename.png'),animations:'disabled'});
   await page.goto('/examples/');
+  const optionWidths = await page.locator('#examples select').evaluateAll((selects) => selects.flatMap((select) => {
+    const style=getComputedStyle(select);
+    const canvas=document.createElement('canvas'); const context=canvas.getContext('2d')!;
+    context.font=`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const available=select.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+    return [...(select as HTMLSelectElement).options].map((option) => ({label:option.text,width:context.measureText(option.text).width,available}));
+  }));
+  for (const option of optionWidths) expect(option.width, option.label).toBeLessThanOrEqual(option.available);
   const tree = page.locator('#examples .mini-tree').first();
   await tree.focus();
   await page.keyboard.press('ArrowRight');
