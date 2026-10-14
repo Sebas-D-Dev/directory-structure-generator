@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ExampleGallery from '../../components/ExampleGallery';
+---
+<SiteLayout title="Explore examples">
+  <div class="page-intro"><a href="/">← Introduction</a><h1>Find a familiar starting point.</h1><p>Browse a small collection, then open a focused explanation when you want more.</p></div>
+  <noscript><p class="notice">All ten examples and their sources are readable below. Filtering needs JavaScript.</p></noscript>
+  <ExampleGallery client:load />
+  <p class="page-next">Want to try a naming decision? The <a href="/lab/">optional Go naming lab</a> is a separate exercise.</p>
+</SiteLayout>

@@ -1,0 +1,151 @@
+---
+// Original schematic: responsibility relationships, not automatic imports or discovery.
+---
+<directory-story id="directory-story" data-state="static" data-beat="3">
+  <figure class="directory-stage" aria-labelledby="directory-caption" tabindex="-1">
+    <figcaption class="story-topbar"><span class="story-title" id="directory-caption"><span class="eyebrow">ONE POSSIBLE LAYOUT</span><span class="story-project">name-kit/</span></span><div class="story-controls" hidden><button class="story-control" type="button">Pause story</button></div></figcaption>
+    <div class="story-world">
+      <svg class="story-connector" viewBox="0 0 480 280" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="story-arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M1 1 L5 3.5 L1 6" /></marker></defs><path class="connector-track" d="M364 100 C364 60 326 52 278 52" marker-end="url(#story-arrow)" /><circle class="connector-marker" r="5" cx="0" cy="0" /></svg>
+      <span class="story-edge-label" aria-hidden="true">checks</span>
+      <ul class="story-tree">
+        <li class="story-group story-source"><div class="story-folder"><span class="folder-tab" aria-hidden="true"></span><code>src/</code><span>does the work</span></div><ul><li class="story-file"><span class="file-glyph" aria-hidden="true"></span><code>app.ts</code></li><li class="story-file story-target"><span class="file-glyph" aria-hidden="true"></span><code>format.ts</code></li></ul></li>
+        <li class="story-group story-checks"><div class="story-folder"><span class="folder-tab" aria-hidden="true"></span><code>tests/</code><span>checks the work</span></div><ul><li class="story-file"><span class="file-glyph" aria-hidden="true"></span><code>format.check.ts</code></li></ul></li>
+        <li class="story-group story-guide"><span class="guide-glyph" aria-hidden="true"></span><div class="story-folder"><code>README.md</code><span>explains the project</span></div></li>
+      </ul>
+      <span class="sr-only">The checks group checks the source behavior. This is an illustrative relationship, not an automatic connection made by a folder.</span>
+    </div>
+    <p class="story-takeaway"><strong>Names reveal a job.</strong> <span>Some are required; others are choices.</span></p>
+    <div class="story-previews" aria-label="Other illustrative project shapes">
+      <div class="project-silhouette"><svg viewBox="0 0 74 44" aria-hidden="true"><rect class="web-frame" x="2" y="3" width="44" height="33" rx="4" /><path d="M3 12h42" /><circle cx="8" cy="8" r="1" /><circle cx="13" cy="8" r="1" /><rect class="web-block" x="10" y="18" width="24" height="4" rx="1" /><rect class="web-block" x="10" y="26" width="16" height="3" rx="1" /><path d="M47 22h8" /><rect class="web-piece" x="55" y="14" width="16" height="12" rx="2" /><rect class="web-piece" x="51" y="29" width="16" height="11" rx="2" /></svg><span>Web<small>pages + components</small></span></div>
+      <div class="project-silhouette"><svg viewBox="0 0 74 44" aria-hidden="true"><path d="M14 22h46" /><rect class="data-input" x="1" y="11" width="15" height="22" rx="3" /><path d="M5 17h7M5 22h7M5 27h7" /><path class="data-step" d="M27 22l11-11 11 11-11 11z" /><rect class="data-report" x="59" y="6" width="14" height="32" rx="2" /><path d="M63 30v-8M67 30V13M71 30V18" /></svg><span>Data<small>inputs → reports</small></span></div>
+    </div>
+    <p class="story-map-note">Illustrative links. Folders don’t wire files together.</p>
+  </figure>
+  <p class="story-playback">A calm loop through code, checks, and guidance.</p>
+  <p class="story-static-note">The complete map. Conventions depend on the project’s tools.</p>
+</directory-story>
+
+<script>
+  import { advanceStoryClock, storyConnectorPoints, storyBeatMs, storyCycleMs, storyControlLabel, type StoryState } from '../domain/story';
+  class DirectoryStory extends HTMLElement {
+    private timer: ReturnType<typeof setTimeout> | undefined;
+    private motion: Animation[] = [];
+    private remaining = storyBeatMs;
+    private started = 0;
+    private elapsed = 0;
+    private beat = 0;
+    private state: StoryState = 'static';
+    private media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private control: HTMLButtonElement | null = null;
+    private playback: HTMLElement | null = null;
+    private controls: HTMLElement | null = null;
+
+    connectedCallback() {
+      this.control = this.querySelector('.story-control');
+      this.playback = this.querySelector('.story-playback');
+      this.controls = this.querySelector('.story-controls');
+      this.control?.addEventListener('click', this.toggle);
+      this.media.addEventListener('change', this.preferenceChanged);
+      document.addEventListener('visibilitychange', this.visibilityChanged);
+      window.addEventListener('pagehide', this.pause);
+      if (this.media.matches) this.showStatic();
+      else if (document.hidden) { this.state = 'paused'; this.render(); }
+      else this.play();
+    }
+    disconnectedCallback() {
+      clearTimeout(this.timer);
+      this.cancelMotion();
+      this.control?.removeEventListener('click', this.toggle);
+      this.media.removeEventListener('change', this.preferenceChanged);
+      document.removeEventListener('visibilitychange', this.visibilityChanged);
+      window.removeEventListener('pagehide', this.pause);
+    }
+    private render() {
+      this.dataset.state = this.state;
+      this.dataset.beat = String(this.beat);
+      if (this.controls) this.controls.hidden = this.state === 'static';
+      if (this.control) this.control.textContent = storyControlLabel(this.state);
+      if (this.playback) this.playback.textContent = this.state === 'paused' ? 'Paused. Resume whenever you like.' : ['Source files do the work.', 'Tests check that work.', 'README explains the project.', 'Code, checks, and guidance together.'][this.beat]!;
+    }
+    private schedule() {
+      clearTimeout(this.timer);
+      this.started = performance.now();
+      this.timer = setTimeout(() => {
+        const duration = performance.now() - this.started;
+        this.elapsed += duration;
+        const phase = advanceStoryClock(this.beat, this.remaining, duration);
+        this.beat = phase.beat; this.remaining = phase.remaining;
+        // A delayed visible-tab callback skips missed phases once; it never replays a backlog.
+        this.motion.forEach((animation) => {animation.currentTime = this.elapsed;});
+        this.render();
+        if (this.state === 'playing') this.schedule();
+      }, this.remaining);
+    }
+    private cancelMotion() {
+      this.motion.forEach((animation) => animation.cancel());
+      this.motion = [];
+    }
+    private createMotion() {
+      if (typeof Element.prototype.animate !== 'function') return;
+      // Repeat only quiet emphasis: files and labels never travel or reset between cycles.
+      const emphasize = (selector: string, beat: number, color: string) => this.querySelectorAll(selector).forEach((element) => {
+        const start = beat * storyBeatMs / storyCycleMs;
+        const animation = element.animate([
+          {outlineColor:'transparent',offset:0},
+          {outlineColor:'transparent',offset:start},
+          {outlineColor:color,offset:start + .05},
+          {outlineColor:color,offset:start + .15},
+          {outlineColor:'transparent',offset:start + .22},
+          {outlineColor:'transparent',offset:1},
+        ], {duration:storyCycleMs,iterations:Infinity,easing:'linear'});
+        animation.pause(); this.motion.push(animation);
+      });
+      emphasize('.story-source .story-file', 0, '#8c6bac');
+      emphasize('.story-checks .story-file', 1, '#598d79');
+      emphasize('.story-guide', 2, '#b09a61');
+      const marker = this.querySelector('.connector-marker');
+      if (marker) {
+        const points = storyConnectorPoints().map(({x,y,opacity,offset}) => ({transform:`translate(${x}px, ${y}px)`,opacity,offset:(storyBeatMs + 300 + offset * 1200) / storyCycleMs}));
+        const animation = marker.animate([
+          {...points[0],opacity:0,offset:0}, ...points, {...points.at(-1),opacity:0,offset:1},
+        ], {duration:storyCycleMs,iterations:Infinity});
+        animation.pause(); this.motion.push(animation);
+      }
+      this.motion.forEach((animation) => {animation.currentTime = this.elapsed;});
+    }
+
+    private play() {
+      if (this.media.matches) { this.showStatic(); return; }
+      if (!this.motion.length) this.createMotion();
+      this.motion.forEach((animation) => {if (animation.playState === 'paused') animation.play();});
+      this.state = 'playing'; this.render(); this.schedule();
+    }
+    private pause = () => {
+      if (this.state !== 'playing') return;
+      clearTimeout(this.timer);
+      this.motion.forEach((animation) => {if (animation.playState === 'running') animation.pause();});
+      const duration = performance.now() - this.started;
+      this.elapsed += duration;
+      const phase = advanceStoryClock(this.beat, this.remaining, duration);
+      this.beat = phase.beat; this.remaining = phase.remaining;
+      this.state = 'paused'; this.render();
+    };
+    private toggle = () => {
+      if (this.state === 'playing') { this.pause(); return; }
+      this.play();
+    };
+    private showStatic() {
+      clearTimeout(this.timer); this.cancelMotion(); this.beat = 3; this.elapsed = 3 * storyBeatMs; this.remaining = storyBeatMs; this.state = 'static'; this.render();
+    }
+    private preferenceChanged = () => {
+      if (this.media.matches) {
+        const hadFocus = document.activeElement === this.control;
+        this.showStatic();
+        if (hadFocus) this.querySelector<HTMLElement>('figure')?.focus({preventScroll:true});
+      }
+      else { this.state = 'paused'; this.render(); }
+    };
+    private visibilityChanged = () => { if (document.hidden) this.pause(); };
+  }
+  if (!customElements.get('directory-story')) customElements.define('directory-story', DirectoryStory);
+</script>

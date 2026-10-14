@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import GuideWorkspace from '../../components/GuideWorkspace';
+---
+<SiteLayout title="Go: the reasons behind a layout">
+  <div class="page-intro"><a href="/examples/">← All examples</a><h1>The reasons behind a Go layout.</h1><p>Start with the project’s job, then inspect a tree, compare options and keep a readable record.</p></div>
+  <noscript><p class="notice">The default tree, explanation, comparison descriptions and sources are readable. Selection, option changes and exports need JavaScript.</p></noscript>
+  <GuideWorkspace client:load />
+  <p class="page-next">Explore two filename rules in the <a href="/lab/">optional Go naming lab</a>. Its state is separate from this layout guide.</p>
+</SiteLayout>

@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import AstroPageFlow from '../../components/AstroPageFlow';
+---
+<SiteLayout title="Astro: from source to browser">
+  <div class="page-intro"><a href="/examples/">← All examples</a><h1>From source files to a page.</h1><p>A focused Astro walkthrough. Explore the deeper explanation at your own pace.</p></div>
+  <noscript><p class="notice">The default step, complete phase map, file list and source disclosures are readable. Selecting steps, files or the hydration comparison needs JavaScript.</p></noscript>
+  <AstroPageFlow client:load />
+  <p class="page-next">This journey is an explanatory model with no export. The separate <a href="/examples/go/">Go layout guide</a> has tree and rationale exports.</p>
+</SiteLayout>

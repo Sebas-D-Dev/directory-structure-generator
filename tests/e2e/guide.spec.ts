@@ -4,8 +4,8 @@ import { readFile } from 'node:fs/promises';
 test('guest can inspect, preview/cancel, change options, undo, and export', async ({page}) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/');
-  await expect(page.getByRole('heading', {level: 1})).toHaveText(/A good structure/);
+  await page.goto('/examples/go/');
+  await expect(page.getByRole('heading', {level: 1})).toHaveText(/The reasons behind a Go layout/);
   await expect(page.locator('#inspector-heading')).toBeVisible();
   await page.getByRole('button', {name: 'go.mod', exact: false}).click();
   await expect(page.locator('#inspector-heading')).toHaveText('go.mod');
@@ -39,7 +39,7 @@ test('guest can inspect, preview/cancel, change options, undo, and export', asyn
 });
 
 test('unsupported combinations stay honest and reload has no false saved state', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/go/');
   await page.getByRole('checkbox', {name: 'Library', exact: false}).check();
   await expect(page.getByText('This combination doesn’t have an authored lesson yet.')).toBeVisible();
   await expect(page.getByText('Memory-only foundation:', {exact: false})).toBeVisible();
@@ -49,7 +49,7 @@ test('unsupported combinations stay honest and reload has no false saved state',
 });
 
 test('keyboard and small-screen content are reachable without overflow', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/go/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', {name: 'Skip to content'})).toBeFocused();
   await page.keyboard.press('Enter');
@@ -68,7 +68,7 @@ test('static build uses local resources and enforces generated CSP', async ({pag
   const consoleErrors: string[] = [];
   page.on('request', (request) => {if (!request.url().startsWith('http://127.0.0.1:4321')) remote.push(request.url());});
   page.on('console', (message) => {if (message.type() === 'error') consoleErrors.push(message.text());});
-  await page.goto('/');
+  await page.goto('/examples/go/');
   await page.getByRole('button', {name: 'Use linear outline'}).click();
   await expect(page.locator('meta[http-equiv="content-security-policy"]')).toHaveAttribute('content', /object-src 'none'/);
   expect(remote).toEqual([]);
@@ -76,7 +76,7 @@ test('static build uses local resources and enforces generated CSP', async ({pag
 });
 
 test('Tab visits every default node and folder disclosure responds to the keyboard', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/go/');
   const visited = new Set<string>();
   await page.locator('.tree-panel .node-button').first().focus();
   for (let index = 0; index < 20 && visited.size < 6; index++) {
