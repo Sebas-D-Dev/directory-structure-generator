@@ -6,7 +6,7 @@ A guest-first educational guide to **why files and folders belong where they do*
 
 ## What is implemented
 
-- A static-first landing map with a one-pass role-highlighting story, pause/resume/replay, and complete reduced-motion/no-JavaScript alternatives
+- A static-first, layered project illustration with settling file tiles, a schematic checks connection, compact Web/Data previews, pause/resume/replay, and complete reduced-motion/no-JavaScript alternatives
 - Separate routes for examples, Astro and Go explanations, the optional naming lab, and sources; known earlier section links forward to their new location
 
 - Plain-language descriptions of six project capabilities, with honest feedback for combinations outside the authored curriculum

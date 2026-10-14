@@ -4,7 +4,7 @@
 
 The owner’s 2026-10-14 correction replaces the long, controls-heavy entry page with a concise visual introduction. The opening should explain itself before asking for interaction. This checkpoint stays on development / draft PR #3; main publication and the coordinated naming/specification update remain separate release decisions.
 
-The landing contains an original, partial TypeScript-style directory map and one primary Explore examples link. All file roles are visible on first paint. A single 9.6-second sequence highlights source, checks and guidance in turn, then holds the complete map. Pause freezes progression, Resume continues the remaining beat, and Replay is optional. Background/page-hide pauses do not automatically resume. Reduced motion and JavaScript-disabled visits receive the complete static map. Switching motion preferences while playing stops the sequence; switching motion back on leaves replay optional.
+The landing contains an original, partial TypeScript-style directory map and one primary Explore examples link. All file roles are visible on first paint. A single 9.6-second sequence settles file tiles into source, checks and guidance groups, traces one checks-to-source connection, then holds the complete map. Layered original surfaces and small static Web/Data silhouettes add depth and range without another catalog or control. Pause freezes the timer and all native animation handles, Resume continues the remaining beat, and Replay is optional. Background/page-hide pauses do not automatically resume. Reduced motion and JavaScript-disabled visits receive the complete static map. Switching motion preferences while playing stops the sequence; switching motion back on leaves replay optional.
 
 The names are illustrative conventions rather than universal requirements. The checks → source-behavior relationship describes a responsibility, not an implied import or automatic test discovery. Folders do not enforce connections. No third-party prose, tree, artwork or animation has been copied. See the on-site source register for primary references and scope.
 
@@ -25,8 +25,14 @@ The source-reviewed catalog, Go content and Astro lesson data are unchanged. Int
 
 ## Acceptance and evidence
 
-Automated coverage includes initial meaning/CTA visibility, a complete 320px map without document overflow, one-pass/pause/resume/replay timing, runtime reduced-motion changes, page-hide suspension, keyboard/touch activation, default no-JavaScript reading, all legacy targets, back/forward, all local route/asset links, all-route CSP hashes and the existing learning/export regressions. Layout captures include initial/final desktop/mobile, 320px and static reduced-motion/no-JavaScript views.
+Automated coverage includes initial meaning/CTA visibility, a complete 320px map and visible pause control without document overflow, one-pass/pause/resume/replay timing, real document-timeline animation suspension and cleanup, runtime reduced-motion changes, page-hide suspension, keyboard/touch activation, default no-JavaScript reading, all legacy targets, back/forward, all local route/asset links, all-route CSP hashes and the existing learning/export regressions. Layout captures include initial/middle/final desktop/mobile, 320px and static reduced-motion/no-JavaScript views.
 
 Supplementary local checks use the available Node 24.19.0/npm 11.9.0 environment. The required Node 24.21.0/npm 12.2.0 baseline and actual browser assertions run in GitHub Actions. Do not interpret local static checks or test discovery as a browser pass. Exact-head CI, Vercel deployment and independent pixel-review results are recorded in PR #3 after execution, without a self-changing status-commit loop.
 
 The protected preview may require Vercel SSO. Its deployment status does not establish hosted browser behavior or served application headers. No protection changes or alternate access route are included. Real devices, screen readers, broad browser coverage, learner studies and runtime lesson fixtures remain unverified.
+
+## Presentation refinement
+
+After reviewing the first concise version, the owner asked for more visual character while retaining the direction. The refined stage uses a spatial source folder, checks folder and README sheet with original file glyphs. The connector and static Web/Data silhouettes are schematic, not evidence that folders automatically establish imports, test discovery or a runtime pipeline. No new application feature, control, source registry or dependency is introduced.
+
+Native Web Animations are tracked explicitly alongside the beat timer. Pause/resume, page-hide suspension, replay, reduced-motion changes and disconnection govern both. All diagrams and labels exist in the static HTML. Tests separate fake-timer sequencing from real animation-currentTime assertions; the middle frame is deliberately paused with animation state preserved rather than fast-forwarded by screenshot tooling.

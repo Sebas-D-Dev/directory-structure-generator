@@ -20,7 +20,7 @@ test('opening story is readable immediately, pauses exactly, replays and ends wi
   await expect(page.locator('#examples, #astro-flow, #rename-lab, #lesson')).toHaveCount(0);
   const cta = await page.locator('.landing-cta').boundingBox();
   expect(cta!.y + cta!.height).toBeLessThan(page.viewportSize()!.height);
-  await page.screenshot({path:testInfo.outputPath('landing-initial.png'),animations:'disabled'});
+  await page.screenshot({path:testInfo.outputPath('landing-initial.png'),animations:'allow'});
   await page.clock.runFor(1200);
   await activate();
   await expect(control).toHaveText('Resume story');
@@ -106,10 +106,12 @@ test('320px autoplay preserves first-paint meaning and complete map without docu
   await expect(page.locator('directory-story')).toHaveAttribute('data-state','playing');
   const cta = await page.locator('.landing-cta').boundingBox();
   const map = await page.locator('.directory-stage').boundingBox();
+  const pause = await page.getByRole('button',{name:'Pause story'}).boundingBox();
   expect(cta!.y + cta!.height).toBeLessThan(740);
   expect(map!.y + map!.height).toBeLessThan(740);
+  expect(pause!.y + pause!.height).toBeLessThan(740);
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-  await page.screenshot({path:testInfo.outputPath('landing-initial-320.png'),animations:'disabled'});
+  await page.screenshot({path:testInfo.outputPath('landing-initial-320.png'),animations:'allow'});
   await page.clock.runFor(9600);
   await expect(page.locator('directory-story')).toHaveAttribute('data-state','complete');
   await page.screenshot({path:testInfo.outputPath('landing-complete-320.png'),animations:'disabled'});
@@ -188,4 +190,45 @@ test('without JavaScript the complete introduction, route links and default less
     await page.goto('http://127.0.0.1:4321/sources/');
     await expect(page.locator('.source-list article')).not.toHaveCount(0);
   } finally { await context.close(); }
+});
+
+
+test('native file and connector motion pauses, resumes, completes and cancels with lifecycle changes', async ({page,isMobile}, testInfo) => {
+  if (isMobile) await page.setViewportSize({width:320,height:740});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/');
+  const story=page.locator('directory-story');
+  const active=() => story.evaluate((element) => element.getAnimations({subtree:true}).filter((animation) => animation.playState === 'running').length);
+  await expect(story).toHaveAttribute('data-state','playing');
+  await expect.poll(active).toBeGreaterThan(0);
+  await expect(story).toHaveAttribute('data-beat','1',{timeout:6000});
+  await expect.poll(() => story.locator('.connector-marker').evaluate((element) => Number(element.getAnimations()[0]?.currentTime ?? 0))).toBeGreaterThan(3850);
+  await story.getByRole('button',{name:'Pause story'}).click();
+  await expect.poll(active).toBe(0);
+  const paused=await story.evaluate((element) => element.getAnimations({subtree:true}).map((animation) => ({time:animation.currentTime,state:animation.playState})));
+  expect(paused.some((animation) => animation.state==='paused')).toBe(true);
+  // A real elapsed interval is deliberate: WAAPI runs on the document timeline, outside the fake timer clock.
+  await page.waitForTimeout(250);
+  expect(await story.evaluate((element) => element.getAnimations({subtree:true}).map((animation) => ({time:animation.currentTime,state:animation.playState})))).toEqual(paused);
+  await page.screenshot({path:testInfo.outputPath('landing-middle-paused.png'),animations:'allow'});
+  await story.getByRole('button',{name:'Resume story'}).click();
+  await expect.poll(active).toBeGreaterThan(0);
+  await expect(story).toHaveAttribute('data-state','complete',{timeout:8000});
+  await expect.poll(active).toBe(0);
+  await story.getByRole('button',{name:'Replay story'}).click();
+  await expect(story).toHaveAttribute('data-beat','0');
+  await expect.poll(active).toBeGreaterThan(0);
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
+  await expect(story).toHaveAttribute('data-state','paused');
+  await expect.poll(active).toBe(0);
+  await story.getByRole('button',{name:'Resume story'}).click();
+  await expect.poll(active).toBeGreaterThan(0);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(story).toHaveAttribute('data-state','static');
+  expect(await story.evaluate((element) => element.getAnimations({subtree:true}).length)).toBe(0);
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await expect(story).toHaveAttribute('data-state','complete');
+  expect(await active()).toBe(0);
+  await story.getByRole('button',{name:'Replay story'}).click();
+  expect(await story.evaluate((element) => {element.remove(); return element.getAnimations({subtree:true}).length;})).toBe(0);
 });

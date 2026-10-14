@@ -41,4 +41,4 @@ for (const id of ['examples', 'astro-flow', 'rename-lab', 'lesson']) assert.ok(!
 const files = readdirSync(new URL('_astro/', dist)).filter((file) => file.endsWith('.js'));
 const gzipBytes = files.reduce((sum, file) => sum + gzipSync(readFileSync(new URL(`_astro/${file}`, dist))).length, 0);
 console.log(`Static artifact checks passed: ${pages.size} routes, ${inlineScripts} hashed inline scripts; local links/assets resolve; no remote assets or forms.`);
-console.log(`All emitted JavaScript gzip total: ${gzipBytes} bytes (artifact size only, not a device-performance result).`);
+console.log(`External JavaScript files gzip total: ${gzipBytes} bytes (artifact size only, not a device-performance result).`);
