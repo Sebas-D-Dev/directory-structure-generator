@@ -43,7 +43,7 @@ export default function AstroPageFlow() {
   }
 
   return <section id="astro-flow" className="page-flow" aria-labelledby="flow-heading">
-    <div className="section-heading"><span className="step">03 / FOLLOW A PAGE · ASTRO</span><h2 id="flow-heading">Before the request.<br /><em>After the build.</em></h2><p>A small topic guide needs a readable home page. Follow its files into the browser, then compare what changes when the topic picker needs to respond.</p></div>
+    <div className="section-heading"><span className="step">ASTRO / SOURCE TO BROWSER</span><h2 id="flow-heading">Before the request.<br /><em>After the build.</em></h2><p>A small topic guide needs a readable home page. Follow its files into the browser, then compare what changes when the topic picker needs to respond.</p></div>
     <div className="flow-scope"><span className="badge">Original teaching model</span><p>Static Astro output. Source composition happens at build time; the host later delivers generated files. This is a source-backed illustration, not a running build or network trace.</p></div>
 
     <fieldset className="flow-mode"><legend>Compare the picker’s rendering choice</legend>
@@ -92,7 +92,7 @@ export default function AstroPageFlow() {
         <details className="depth"><summary>File sources and scope</summary>{sources(file.sourceIds)}<p>{astroFlow.verification}.</p></details>
       </section>
     </div>
-    <details className="depth flow-assumptions"><summary>Lesson assumptions and provenance</summary><ul>{astroFlow.assumptions.map((item) => <li key={item}>{item}</li>)}</ul><p>{astroFlow.reuse}.</p><p>Revision {astroFlow.version}. Checked 2026-10-13; source review due 2027-04-13. These living documentation references are not immutable snapshots.</p><p>This comparison has no persistence or project export. It preserves no files and does not change the Go workspace below. Reload returns to the static comparison’s first step.</p></details>
+    <details className="depth flow-assumptions"><summary>Lesson assumptions and provenance</summary><ul>{astroFlow.assumptions.map((item) => <li key={item}>{item}</li>)}</ul><p>{astroFlow.reuse}.</p><p>Revision {astroFlow.version}. Checked 2026-10-13; source review due 2027-04-13. These living documentation references are not immutable snapshots.</p><p>This comparison has no persistence or project export. It preserves no files and does not change the separate Go layout guide. Reload returns to the static comparison’s first step.</p></details>
     <p className="live-status" role="status" aria-live="polite">{status}</p>
   </section>;
 }

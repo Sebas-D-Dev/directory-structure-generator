@@ -1,0 +1,10 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import RenameLab from '../components/RenameLab';
+---
+<SiteLayout title="Optional Go naming lab">
+  <div class="page-intro"><a href="/examples/">← All examples</a><h1>Try a naming decision.</h1><p>An optional exercise for a closer look at Go’s filename rules.</p></div>
+  <noscript><p class="notice">The default entry-file diagram, assumptions and sources are readable. Previewing a rename and changing cases needs JavaScript.</p></noscript>
+  <RenameLab client:load />
+  <p class="page-next">This lab resets on reload and has no export. Explore and export a complete explanatory tree in the <a href="/examples/go/">Go layout guide</a>.</p>
+</SiteLayout>

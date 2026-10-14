@@ -1,10 +1,13 @@
 # Repository Structure Guide
 
-A guest-first educational guide to **why files and folders belong where they do**. Start with project purpose, inspect a concrete example, compare a simpler layout with an alternative, and follow the evidence behind each choice.
+A guest-first educational guide to **why files and folders belong where they do**. Start with a short, self-explaining directory story. Follow a simple link to examples and deeper explanations when you want more.
 
-**Status: the initial foundation is published; the next Astro learning checkpoint is under review on development.** This is not a finished curriculum. The working name remains provisional; coordinated renaming and the specification update are reserved for a later approved main release. Git history and the existing license remain intact.
+**Status: the initial foundation is published; the visual introduction and focused learning routes are under review on development.** This is not a finished curriculum. The working name remains provisional; coordinated renaming and the specification update are reserved for a later approved main release. Git history and the existing license remain intact.
 
 ## What is implemented
+
+- A static-first landing map with a one-pass role-highlighting story, pause/resume/replay, and complete reduced-motion/no-JavaScript alternatives
+- Separate routes for examples, Astro and Go explanations, the optional naming lab, and sources; known earlier section links forward to their new location
 
 - Plain-language descriptions of six project capabilities, with honest feedback for combinations outside the authored curriculum
 - Five original teaching cards: Go CLI, Astro web app, FastAPI backend, Python data analysis, and Python library
@@ -19,7 +22,7 @@ A guest-first educational guide to **why files and folders belong where they do*
 - Deterministic text tree/rationale and versioned JSON-record downloads
 - Strict typed content contracts, build-time content validation, unit tests, browser checks, and a CI workflow
 
-The collection and lesson are **source-reviewed drafts**. The rename lab is a documentation-based simulation, not a Go runtime experiment. Its state and the Astro page journey are separate from the Go layout workspace and are not included in layout exports. The Astro fixture is also source-reviewed and unrun; it is not a captured build or network trace. Its Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
+The collection and lesson are **source-reviewed drafts**. The rename lab is a documentation-based simulation, not a Go runtime experiment. Its state and the Astro page journey are separate from the Go layout workspace and are not included in layout exports. The Astro fixture is also source-reviewed and unrun; it is not a captured build or network trace. The Go experiment has not been run. The example trees and downloads are explanatory plans, not runnable photo-renaming software. App tests do not establish the lesson's language-runtime behavior or educational effectiveness.
 
 ## Deliberately not implemented
 
@@ -56,7 +59,7 @@ Browser tests use Playwright's pinned Chromium by default. For a managed environ
 
 ## Why this toolchain
 
-Astro builds the static educational shell; React owns one coherent interactive workspace; TypeScript checks authoring contracts; Zod validates content/project records; Node supplies the development/build runtime and test runner; npm resolves the locked dependencies. The production output needs only static hosting.
+Astro builds the static educational shell; React powers the separate optional learning tools; a small native element progressively enhances the landing story; TypeScript checks authoring contracts; Zod validates content/project records; Node supplies the development/build runtime and test runner; npm resolves the locked dependencies. The production output needs only static hosting.
 
 Exact baseline: Astro **7.3.8**, `@astrojs/react` **7.0.1**, React/React DOM **19.3.0**, TypeScript **6.0.3**, Zod **4.6.7**, `@astrojs/check` **0.9.10**, Playwright **1.64.0**. TypeScript 7.0.2 was current when checked but outside the checker's declared peer range; 6.0.3 is the selected compatible stable release. There are no forced peer-dependency overrides. Bun was not admitted or benchmarked: this foundation has no demonstrated need for another runtime/package manager.
 
@@ -67,8 +70,9 @@ See [the checkpoint decision](docs/foundation-decision.md), [verification record
 ```text
 src/content/       Authored lesson, claims, sources, and layout options
 src/domain/        UI-independent schemas, invariants, paths, diffs, and exports
-src/components/    React learning workspace
-src/pages/         Static Astro document and source register
+src/components/    Original story and optional React learning tools
+src/layouts/       Shared static page shell
+src/pages/         Introduction, examples, focused lessons, lab, sources
 src/styles/        Local CSS; no remote fonts or component framework
 scripts/           Build-time content checks
 tests/             Unit and browser regression tests
@@ -81,7 +85,7 @@ Content is trusted authored data, validated before build. There is no remote-con
 
 The initial foundation was released through PR #2 at `aa04e0c21eda47523631aa59e7a5d6dbe40351a9`. Its public site is [directory-structure-generator.vercel.app](https://directory-structure-generator.vercel.app/). Main CI, Vercel publication, public content/assets/headers and key browser interactions were verified at that release. `development` began at the same commit.
 
-This branch's newer Astro checkpoint is for review only. Main production remains on the approved release until a separately approved merge. The existing project/domain and `vercel.json` are unchanged. Branch pushes can publish protected previews automatically; CI results and preview identity belong to the exact draft-PR head. See [the Astro checkpoint](docs/astro-flow-checkpoint.md).
+This branch’s Astro journey and redesigned visual introduction are for review only. Main production remains on the approved release until a separately approved merge. The existing project/domain and `vercel.json` are unchanged. Branch pushes can publish protected previews automatically; CI results and preview identity belong to the exact draft-PR head. See [the Astro checkpoint](docs/astro-flow-checkpoint.md) and [visual introduction/route checkpoint](docs/landing-routes-checkpoint.md).
 
 The noindex directive is a search-engine hint, not access control. This static guest experience requires no secrets or database. No hosting permissions, service connections, credentials, GitHub/Vercel names or portfolio references are changed in this checkpoint.
 

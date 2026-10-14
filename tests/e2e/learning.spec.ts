@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 test('collection filters intersect, update counts, expose provenance and recover from empty state', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/');
   const gallery = page.locator('#examples');
   await expect(gallery.locator('.example-card')).toHaveCount(5);
   await gallery.getByLabel('Language', {exact:true}).selectOption('Python');
@@ -27,7 +27,7 @@ test('collection filters intersect, update counts, expose provenance and recover
 });
 
 test('rename lab previews, cancels, applies, undoes and resets both semantic cases', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/lab/');
   const lab = page.locator('#rename-lab');
   await lab.getByRole('button', {name:'Reveal naming consequence'}).click();
   await expect(lab.locator('.rename-delta')).toContainText('cli.go');
@@ -58,7 +58,7 @@ test('rename lab previews, cancels, applies, undoes and resets both semantic cas
 
 test('keyboard controls and reduced motion preserve the full lesson without idle animation', async ({page}) => {
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/lab/');
   const lab = page.locator('#rename-lab');
   await lab.getByRole('radio', {name:'An entry file', exact:false}).focus();
   await page.keyboard.press('ArrowDown');
@@ -78,7 +78,7 @@ test('keyboard controls and reduced motion preserve the full lesson without idle
 
 test('motion is brief and user-triggered, never an ambient loop', async ({page}) => {
   await page.emulateMedia({reducedMotion:'no-preference'});
-  await page.goto('/');
+  await page.goto('/lab/');
   const lab = page.locator('#rename-lab');
   await lab.getByRole('button', {name:'Reveal naming consequence'}).click();
   const timing = await lab.locator('.result-copy').evaluate((element) => {const style=getComputedStyle(element);return {duration:style.animationDuration,iterations:style.animationIterationCount};});
@@ -88,8 +88,9 @@ test('motion is brief and user-triggered, never an ambient loop', async ({page})
 
 // Static local-only captures for the independent layout review; no user data or tokens.
 test('capture the original teaching collection and lab for layout review', async ({page}, testInfo) => {
-  await page.goto('/');
+  await page.goto('/examples/');
   await page.locator('#examples').screenshot({path:testInfo.outputPath('collection.png'),animations:'disabled'});
+  await page.goto('/lab/');
   await page.locator('#rename-lab').getByRole('radio', {name:'A test file',exact:false}).check();
   await page.locator('#rename-lab').getByRole('button', {name:'Reveal naming consequence'}).click();
   await page.locator('#rename-lab').screenshot({path:testInfo.outputPath('rename-lab.png'),animations:'disabled'});
@@ -97,7 +98,7 @@ test('capture the original teaching collection and lab for layout review', async
 
 test('pointer controls work at 320px, including touch on mobile and a long valid name', async ({page, isMobile}) => {
   await page.setViewportSize({width:320,height:740});
-  await page.goto('/');
+  await page.goto('/lab/');
   const lab = page.locator('#rename-lab');
   const activate = async (name: string) => {const control=lab.getByRole('button',{name,exact:true});if(isMobile) await control.tap();else await control.click();};
   await lab.getByLabel('Try a new filename').fill('an_intentionally_long_platform_neutral_filename_for_learning.go');
@@ -110,6 +111,8 @@ test('pointer controls work at 320px, including touch on mobile and a long valid
   await expect(lab.locator('.diagram-node').first()).toContainText('an_intentionally_long');
   await activate('Undo rename');
   await expect(lab.locator('.diagram-node').first()).toContainText('main.go');
+  await lab.screenshot({path:test.info().outputPath('narrow-rename.png'),animations:'disabled'});
+  await page.goto('/examples/');
   const tree = page.locator('#examples .mini-tree').first();
   await tree.focus();
   await page.keyboard.press('ArrowRight');
@@ -118,5 +121,4 @@ test('pointer controls work at 320px, including touch on mobile and a long valid
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.keyboard.press('Home');
   await page.locator('#examples').screenshot({path:test.info().outputPath('narrow-collection.png'),animations:'disabled'});
-  await lab.screenshot({path:test.info().outputPath('narrow-rename.png'),animations:'disabled'});
 });

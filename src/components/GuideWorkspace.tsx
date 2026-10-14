@@ -1,7 +1,4 @@
 import { useRef, useState } from 'react';
-import ExampleGallery from './ExampleGallery.tsx';
-import RenameLab from './RenameLab.tsx';
-import AstroPageFlow from './AstroPageFlow.tsx';
 import { content } from '../content/foundation.ts';
 import { projectSchema, type Capability, type Project, type StructureNode } from '../domain/contracts.ts';
 import { compareVariants, exportProject, getVariant, initialProject, pathFor, supportsCapabilities } from '../domain/model.ts';
@@ -109,12 +106,9 @@ export default function GuideWorkspace() {
       {!fits && <div className="notice" role="status"><strong>This combination doesn’t have an authored lesson yet.</strong> You can still explore the CLI example below. It is a nearby learning example, not a generated design for your project.</div>}
     </section>
 
-    <ExampleGallery />
-    <AstroPageFlow />
-    <RenameLab />
 
     <section className="lesson" id="lesson" aria-labelledby="lesson-heading">
-      <div className="section-heading"><span className="step">05 / EXPLORE A FULL TREE</span><h2 id="lesson-heading">{content.lesson.title}</h2><p>{content.lesson.purpose}</p></div>
+      <div className="section-heading"><span className="step">02 / EXPLORE A FULL TREE</span><h2 id="lesson-heading">{content.lesson.title}</h2><p>{content.lesson.purpose}</p></div>
       <div className="scenario-card">
         <div><span className="eyebrow">AUTHORED EXAMPLE · GO CLI</span><h3>Photo renamer</h3><p>{content.lesson.prerequisites}</p><p className="scope-note">{content.lesson.applicability}</p></div>
         <div><h4>Example assumptions</h4><ul>{content.lesson.assumptions.map((item) => <li key={item}>{item}</li>)}</ul><details><summary>What’s still unknown?</summary><ul>{content.lesson.unknowns.map((item) => <li key={item}>{item}</li>)}</ul></details></div>
@@ -148,7 +142,7 @@ export default function GuideWorkspace() {
     </section>
 
     <section className="comparison" id="compare" aria-labelledby="compare-heading">
-      <div className="section-heading"><span className="step">06 / COMPARE THE COST</span><h2 id="compare-heading">Two options. The same small command.</h2><p>Extra folders are a choice with consequences. Preview the difference before changing your learning model.</p></div>
+      <div className="section-heading"><span className="step">03 / COMPARE THE COST</span><h2 id="compare-heading">Two options. The same small command.</h2><p>Extra folders are a choice with consequences. Preview the difference before changing your learning model.</p></div>
       <div className="option-grid">{content.variants.map((option, index) => <article className="option-card" key={option.id}>
         <span className="option-number">0{index + 1}</span><h3>{option.title}</h3><p>{option.summary}</p><p><strong>Useful when:</strong> {option.fit}</p><p><strong>The cost:</strong> {option.cost}</p>
         <button className="secondary" disabled={project.variantId === option.id} onClick={(event) => {previewTrigger.current = event.currentTarget; setPreview(projectSchema.shape.variantId.parse(option.id));}}>{project.variantId === option.id ? 'Current option' : 'Preview this option'}</button>
@@ -158,7 +152,7 @@ export default function GuideWorkspace() {
       <div className="thought"><span className="eyebrow">A REQUIREMENT WORTH ASKING ABOUT</span><h3>What if another program needs the naming logic?</h3><p>A second command inside this module can use an internal package. An outside program needs a public API decision. The folder move alone does not answer that question.</p><p className="small">This checkpoint provides option comparison and undo. A full requirement-change workflow is still planned.</p></div>
     </section>
 
-    <section className="export-section" aria-labelledby="export-heading"><div><span className="step">07 / TAKE THE REASONING WITH YOU</span><h2 id="export-heading">Keep a readable record</h2><p>Export this Go layout workspace’s tree, explanations, assumptions, and sources. The separate Astro page journey, rename lab and example-card filters are not included. These are plans for learning, not runnable scaffolds.</p><p className="small">Memory-only foundation: selections are lost on reload. JSON export is a versioned record; restoring it and saving automatically are not available yet.</p></div><div className="actions"><button className="primary" onClick={() => download('text')}>Export tree + rationale</button><button className="secondary" onClick={() => download('json')}>Export JSON record</button></div></section>
+    <section className="export-section" aria-labelledby="export-heading"><div><span className="step">04 / TAKE THE REASONING WITH YOU</span><h2 id="export-heading">Keep a readable record</h2><p>Export this Go layout workspace’s tree, explanations, assumptions, and sources. The separate Astro page journey, rename lab and example-card filters are not included. These are plans for learning, not runnable scaffolds.</p><p className="small">Memory-only foundation: selections are lost on reload. JSON export is a versioned record; restoring it and saving automatically are not available yet.</p></div><div className="actions"><button className="primary" onClick={() => download('text')}>Export tree + rationale</button><button className="secondary" onClick={() => download('json')}>Export JSON record</button></div></section>
     <p className="live-status" role="status" aria-live="polite">{status}</p>
   </>;
 }

@@ -1,0 +1,22 @@
+---
+import '../styles/global.css';
+interface Props { title: string; description?: string; home?: boolean; }
+const {title, description = 'Understand the purpose, rules and relationships behind repository structure.', home = false} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} · Repository Structure Guide</title>
+  </head>
+  <body class:list={['multipage', { 'home-page': home }]}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><a class="brand" href="/" aria-label="Repository Structure Guide home"><span class="brand-mark" aria-hidden="true">r/</span><span>Repository<br />Structure Guide</span></a><nav aria-label="Main navigation"><a href="/examples/">Examples</a><a href="/sources/">Sources</a></nav></header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer><p>Repository Structure Guide<br />An early, source-reviewed guide.</p><nav aria-label="Footer navigation"><a href="/">Introduction</a><a href="/examples/">Examples</a><a href="/lab/">Optional naming lab</a><a href="/sources/">Sources &amp; scope</a></nav><p class="hosting-note">No account needed. Hosting requests may be logged.</p></footer>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+---
+// Independently authored, partial example. It does not prescribe a universal layout.
+---
+<directory-story id="directory-story" data-state="static" data-beat="3">
+  <figure class="directory-stage" aria-labelledby="directory-caption" tabindex="-1">
+    <figcaption id="directory-caption"><span class="eyebrow">ONE POSSIBLE LAYOUT</span><span class="story-project">name-kit/</span></figcaption>
+    <ul class="story-tree">
+      <li class="story-group story-source"><div class="story-folder"><code>src/</code><span>does the work</span></div><ul><li><code>app.ts</code><small>entry</small></li><li class="story-target"><code>format.ts</code><small>behavior</small></li></ul></li>
+      <li class="story-group story-checks"><div class="story-folder"><code>tests/</code><span>checks the work</span></div><ul><li><code>format.check.ts</code><small>checks</small></li></ul></li>
+      <li class="story-group story-guide"><div class="story-folder"><code>README.md</code><span>explains the start</span></div></li>
+    </ul>
+    <div class="story-connection"><span>checks</span><span class="story-edge" aria-hidden="true"></span><span>source behavior</span></div>
+    <p class="story-map-note">Folders group responsibilities. They don’t enforce the connections.</p>
+  </figure>
+  <div class="story-controls" hidden><button class="story-control" type="button">Pause story</button><p class="story-playback">A short story, played once.</p></div>
+  <p class="story-static-note">The complete map. Folder and check-file conventions depend on the project’s tools.</p>
+</directory-story>
+
+<script>
+  import { nextStoryBeat, storyBeatMs, storyBeatCount, storyControlLabel, type StoryState } from '../domain/story';
+  class DirectoryStory extends HTMLElement {
+    private timer: ReturnType<typeof setTimeout> | undefined;
+    private remaining = storyBeatMs;
+    private started = 0;
+    private beat = 0;
+    private state: StoryState = 'static';
+    private media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private control: HTMLButtonElement | null = null;
+    private playback: HTMLElement | null = null;
+    private controls: HTMLElement | null = null;
+
+    connectedCallback() {
+      this.control = this.querySelector('.story-control');
+      this.playback = this.querySelector('.story-playback');
+      this.controls = this.querySelector('.story-controls');
+      this.control?.addEventListener('click', this.toggle);
+      this.media.addEventListener('change', this.preferenceChanged);
+      document.addEventListener('visibilitychange', this.visibilityChanged);
+      window.addEventListener('pagehide', this.pause);
+      if (this.media.matches) this.showStatic();
+      else if (document.hidden) { this.state = 'paused'; this.render(); }
+      else this.play();
+    }
+    disconnectedCallback() {
+      clearTimeout(this.timer);
+      this.control?.removeEventListener('click', this.toggle);
+      this.media.removeEventListener('change', this.preferenceChanged);
+      document.removeEventListener('visibilitychange', this.visibilityChanged);
+      window.removeEventListener('pagehide', this.pause);
+    }
+    private render() {
+      this.dataset.state = this.state;
+      this.dataset.beat = String(this.beat);
+      if (this.controls) this.controls.hidden = this.state === 'static';
+      if (this.control) this.control.textContent = storyControlLabel(this.state);
+      if (this.playback) this.playback.textContent = this.state === 'complete' ? 'The complete map. No loop.' : this.state === 'paused' ? 'Paused. The map stays readable.' : ['Source files do the work.', 'Tests check that work.', 'README explains where to start.'][this.beat]!;
+    }
+    private schedule() {
+      clearTimeout(this.timer);
+      this.started = performance.now();
+      this.timer = setTimeout(() => {
+        this.beat = nextStoryBeat(this.beat);
+        this.remaining = storyBeatMs;
+        if (this.beat === storyBeatCount) this.state = 'complete';
+        this.render();
+        if (this.state === 'playing') this.schedule();
+      }, this.remaining);
+    }
+    private play() {
+      if (this.media.matches) { this.showStatic(); return; }
+      this.state = 'playing'; this.render(); this.schedule();
+    }
+    private pause = () => {
+      if (this.state !== 'playing') return;
+      clearTimeout(this.timer);
+      this.remaining = Math.max(0, this.remaining - (performance.now() - this.started));
+      this.state = 'paused'; this.render();
+    };
+    private toggle = () => {
+      if (this.state === 'playing') { this.pause(); return; }
+      if (this.state === 'complete') { this.beat = 0; this.remaining = storyBeatMs; }
+      this.play();
+    };
+    private showStatic() {
+      clearTimeout(this.timer); this.beat = storyBeatCount; this.state = 'static'; this.render();
+    }
+    private preferenceChanged = () => {
+      if (this.media.matches) {
+        const hadFocus = document.activeElement === this.control;
+        this.showStatic();
+        if (hadFocus) this.querySelector<HTMLElement>('figure')?.focus({preventScroll:true});
+      }
+      else { this.state = 'complete'; this.render(); }
+    };
+    private visibilityChanged = () => { if (document.hidden) this.pause(); };
+  }
+  if (!customElements.get('directory-story')) customElements.define('directory-story', DirectoryStory);
+</script>

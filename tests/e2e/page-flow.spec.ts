@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 test('page journey separates build from delivery and compares hydration without losing context', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/astro/');
   const flow = page.locator('#astro-flow');
   await expect(flow.getByRole('radio', {name:'Static markup',exact:false})).toBeChecked();
   await expect(flow.locator('#flow-step-heading')).toHaveText('A source path becomes a route');
@@ -30,7 +30,7 @@ test('page journey separates build from delivery and compares hydration without 
 });
 
 test('all six file explanations connect to a sourced step and preserve original scope', async ({page}) => {
-  await page.goto('/');
+  await page.goto('/examples/astro/');
   const flow = page.locator('#astro-flow');
   const files = flow.getByRole('region', {name:'Files in the Astro illustration'});
   const expected = [
@@ -54,12 +54,12 @@ test('all six file explanations connect to a sourced step and preserve original 
   await flow.getByText('Lesson assumptions and provenance',{exact:true}).click();
   await expect(flow).toContainText('no third-party material reproduced');
   await expect(flow).toContainText('illustrative fixture not executed');
-  await expect(page.getByText('The separate Astro page journey, rename lab and example-card filters are not included.', {exact:false})).toBeVisible();
+  await expect(page.getByText('This journey is an explanatory model with no export.', {exact:false})).toBeVisible();
 });
 
 test('keyboard selection and reduced motion retain the full explanation', async ({page}) => {
   await page.emulateMedia({reducedMotion:'reduce'});
-  await page.goto('/');
+  await page.goto('/examples/astro/');
   const flow = page.locator('#astro-flow');
   await flow.getByRole('radio',{name:'Static markup',exact:false}).focus();
   await page.keyboard.press('ArrowRight');
@@ -78,7 +78,7 @@ test('keyboard selection and reduced motion retain the full explanation', async 
 
 test('320px touch and pointer paths keep source explanations reachable without overflow', async ({page,isMobile}, testInfo) => {
   await page.setViewportSize({width:320,height:740});
-  await page.goto('/');
+  await page.goto('/examples/astro/');
   const flow = page.locator('#astro-flow');
   const activate = async (locator: ReturnType<typeof flow.getByRole>) => isMobile ? locator.tap() : locator.click();
   await activate(flow.getByRole('radio',{name:'Interactive island',exact:false}));
@@ -100,7 +100,7 @@ test('320px touch and pointer paths keep source explanations reachable without o
 });
 
 test('capture the Astro flow and file inspector for independent pixel review', async ({page}, testInfo) => {
-  await page.goto('/');
+  await page.goto('/examples/');
   await page.getByRole('link',{name:'Follow this page into the browser',exact:false}).click();
   const flow = page.locator('#astro-flow');
   await flow.getByRole('radio',{name:'Interactive island',exact:false}).check();

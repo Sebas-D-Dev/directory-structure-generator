@@ -80,3 +80,7 @@ Supplementary checks in the resumed local environment (Node 24.19.0/npm 11.9.0) 
 ## Subsequent development checkpoint: Astro page flow
 
 The first main release was verified at `aa04e0c21eda47523631aa59e7a5d6dbe40351a9` (PR #2), including public-domain browser/HTTP checks. The new page-flow lesson is a later development change, not part of that release evidence. Its exact-head test results, independent review and preview are recorded in its draft PR. Main remains unchanged pending the next approved release. See `docs/astro-flow-checkpoint.md` for scope and acceptance; the formal v0.2 specification remains unchanged.
+
+## Visual introduction and route separation
+
+The 2026-10-14 owner correction moves optional learning tools off the landing. See `docs/landing-routes-checkpoint.md` for the bounded scope, route map and acceptance criteria. Six static routes now receive build-time CSP/hash, local-link and asset validation. Existing content digests and dependency versions are unchanged. Supplementary local checks passed 49 unit/content tests, type checks and the six-route build; 46 browser cases are prepared for the exact-head CI run. This is test inventory, not a claim that an unexecuted run passed. Final browser/preview/independent visual evidence belongs to PR #3.
