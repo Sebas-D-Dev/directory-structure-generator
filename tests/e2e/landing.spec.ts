@@ -16,7 +16,7 @@ test('opening story is readable immediately, pauses exactly, replays and ends wi
   await expect(story).toHaveAttribute('data-state','playing');
   await expect(story).toHaveAttribute('data-beat','0');
   await expect(page.getByRole('heading',{level:1})).toHaveText('See how a projectfits together.');
-  for (const label of ['does the work','checks the work','explains the start']) await expect(story.getByText(label,{exact:true})).toBeVisible();
+  for (const label of ['does the work','checks the work','explains the project']) await expect(story.getByText(label,{exact:true})).toBeVisible();
   await expect(page.locator('#examples, #astro-flow, #rename-lab, #lesson')).toHaveCount(0);
   const cta = await page.locator('.landing-cta').boundingBox();
   expect(cta!.y + cta!.height).toBeLessThan(page.viewportSize()!.height);
@@ -117,7 +117,7 @@ test('320px autoplay preserves first-paint meaning and complete map without docu
   await expect(page).toHaveURL(/\/examples\/$/);
 });
 
-test('separate routes link naturally and browser back and forward preserve the route', async ({page}) => {
+test('separate routes link naturally and browser back and forward preserve the route', async ({page},testInfo) => {
   const errors:string[]=[];
   const remote:string[]=[];
   page.on('pageerror',error=>errors.push(error.message));
@@ -125,19 +125,24 @@ test('separate routes link naturally and browser back and forward preserve the r
   page.on('request',request=>{if(!request.url().startsWith('http://127.0.0.1:4321')) remote.push(request.url());});
   await page.goto('/');
   await page.locator('.landing-cta').click();
+  await page.screenshot({path:testInfo.outputPath('route-examples.png'),animations:'disabled'});
   await page.getByRole('link',{name:'Follow this page into the browser',exact:false}).click();
   await expect(page).toHaveURL(/\/examples\/astro\/$/);
   await expect(page.locator('#astro-flow')).toBeVisible();
+  await page.screenshot({path:testInfo.outputPath('route-astro.png'),animations:'disabled'});
   await page.goBack(); await expect(page).toHaveURL(/\/examples\/$/);
   await page.goForward(); await expect(page).toHaveURL(/\/examples\/astro\/$/);
   await page.getByRole('link',{name:'All examples',exact:false}).click();
   await page.getByRole('link',{name:'Explore this Go layout',exact:false}).click();
   await expect(page).toHaveURL(/\/examples\/go\/$/);
+  await page.screenshot({path:testInfo.outputPath('route-go.png'),animations:'disabled'});
   await page.getByRole('link',{name:'optional Go naming lab',exact:true}).click();
   await expect(page).toHaveURL(/\/lab\/$/);
+  await page.screenshot({path:testInfo.outputPath('route-lab.png'),animations:'disabled'});
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link',{name:'Sources',exact:true}).click();
   await expect(page).toHaveURL(/\/sources\/$/);
   await expect(page.getByRole('heading',{name:'Original examples, visible limits.'})).toBeVisible();
+  await page.screenshot({path:testInfo.outputPath('route-sources.png'),animations:'disabled'});
   await page.getByRole('link',{name:'Repository Structure Guide home'}).click();
   await expect(page).toHaveURL('http://127.0.0.1:4321/');
   expect(errors).toEqual([]); expect(remote).toEqual([]);

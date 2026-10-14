@@ -7,7 +7,7 @@
     <ul class="story-tree">
       <li class="story-group story-source"><div class="story-folder"><code>src/</code><span>does the work</span></div><ul><li><code>app.ts</code><small>entry</small></li><li class="story-target"><code>format.ts</code><small>behavior</small></li></ul></li>
       <li class="story-group story-checks"><div class="story-folder"><code>tests/</code><span>checks the work</span></div><ul><li><code>format.check.ts</code><small>checks</small></li></ul></li>
-      <li class="story-group story-guide"><div class="story-folder"><code>README.md</code><span>explains the start</span></div></li>
+      <li class="story-group story-guide"><div class="story-folder"><code>README.md</code><span>explains the project</span></div></li>
     </ul>
     <div class="story-connection"><span>checks</span><span class="story-edge" aria-hidden="true"></span><span>source behavior</span></div>
     <p class="story-map-note">Folders group responsibilities. They don’t enforce the connections.</p>
@@ -53,7 +53,7 @@
       this.dataset.beat = String(this.beat);
       if (this.controls) this.controls.hidden = this.state === 'static';
       if (this.control) this.control.textContent = storyControlLabel(this.state);
-      if (this.playback) this.playback.textContent = this.state === 'complete' ? 'The complete map. No loop.' : this.state === 'paused' ? 'Paused. The map stays readable.' : ['Source files do the work.', 'Tests check that work.', 'README explains where to start.'][this.beat]!;
+      if (this.playback) this.playback.textContent = this.state === 'complete' ? 'Code, checks, and guidance together.' : this.state === 'paused' ? 'Paused. The map stays readable.' : ['Source files do the work.', 'Tests check that work.', 'README explains the project.'][this.beat]!;
     }
     private schedule() {
       clearTimeout(this.timer);

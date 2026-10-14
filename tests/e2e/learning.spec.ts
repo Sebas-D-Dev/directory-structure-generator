@@ -8,7 +8,7 @@ test('collection filters intersect, update counts, expose provenance and recover
   await expect(gallery.locator('.example-card')).toHaveCount(3);
   await gallery.getByLabel('Project type', {exact:true}).selectOption('Library');
   await expect(gallery.locator('.example-card')).toHaveCount(1);
-  await expect(gallery.getByRole('option', {name:'All languages (1)', exact:true})).toBeAttached();
+  await expect(gallery.getByRole('option', {name:'All languages · 1 example', exact:true})).toBeAttached();
   await expect(gallery.getByRole('status')).toContainText('1 of 5');
   await gallery.getByText('Consequences and sources', {exact:true}).click();
   await expect(gallery.getByText('Package discovery still needs', {exact:false})).toBeVisible();
