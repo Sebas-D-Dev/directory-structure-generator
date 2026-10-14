@@ -211,7 +211,8 @@
   .story-source { left:0;top:10px;width:58%;padding:16px 19px;background:#dfd4ee;border:1px solid #bfa7d6;box-shadow:0 5px 0 #c9b5dc,0 12px 20px #52307512; }
   .story-checks { right:0;top:35.714%;width:48%;padding:14px 16px;background:#d9ebe5;border:1px solid #96bfb1;box-shadow:0 5px 0 #bbd6cd,0 12px 20px #204f4212;z-index:2; }
   .folder-tab { position:absolute;top:-8px;left:14px;width:48px;height:9px;background:inherit;border:1px solid #bfa7d6;border-bottom:0;border-radius:5px 5px 0 0; }
-  .story-checks .folder-tab { border-color:#96bfb1; }
+  .story-source .folder-tab { background:#dfd4ee; }
+  .story-checks .folder-tab { border-color:#96bfb1;background:#d9ebe5; }
   .story-folder { display:grid;gap:2px; }
   .story-folder code { font:700 .91rem/1.4 monospace;color:#382550; }
   .story-folder > span:not(.folder-tab) { font-size:.7rem;color:#5e516d; }
@@ -234,7 +235,7 @@
   .connector-track { fill:none;stroke:#5b9582;stroke-width:1.8;stroke-dasharray:4 3; }
   #story-arrow path { fill:none;stroke:#5b9582;stroke-width:1.2; }
   .connector-marker { fill:#285f4e;stroke:#fff;stroke-width:2;opacity:0; }
-  .story-edge-label { position:absolute;left:66%;top:16%;font-size:.67rem;color:#3d6b5a;background:#f0edf5;padding:0 6px; }
+  .story-edge-label { position:absolute;left:66%;top:8%;font-size:.67rem;color:#3d6b5a;background:#f0edf5;padding:0 6px; }
   .story-previews { display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #d9d2e1;padding-top:13px;margin-top:18px; }
   .project-silhouette { display:flex;gap:10px;align-items:center;min-width:0; }
   .project-silhouette > svg { width:66px;height:42px;flex:none;fill:none;stroke:#9b8cad;stroke-width:1.4; }
@@ -283,7 +284,7 @@
     .story-checks .file-glyph { display:none; }
     .story-guide { padding:9px 12px;gap:9px;width:70%;left:3%; }
     .guide-glyph { height:25px;width:20px; }
-    .story-edge-label { font-size:.61rem;left:64%;top:13%; }
+    .story-edge-label { font-size:.61rem;left:64%;top:5%; }
     .story-previews { padding-top:10px;margin-top:13px;gap:10px; }
     .project-silhouette > svg { width:46px;height:34px; }
     .project-silhouette > span { font-size:.66rem; }

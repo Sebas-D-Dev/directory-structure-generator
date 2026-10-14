@@ -210,6 +210,10 @@ test('native file and connector motion pauses, resumes, completes and cancels wi
   // A real elapsed interval is deliberate: WAAPI runs on the document timeline, outside the fake timer clock.
   await page.waitForTimeout(250);
   expect(await story.evaluate((element) => element.getAnimations({subtree:true}).map((animation) => ({time:animation.currentTime,state:animation.playState})))).toEqual(paused);
+  expect(await story.locator('.connector-marker').evaluate((element) => {
+    const rect=element.getBoundingClientRect();
+    return Number(getComputedStyle(element).opacity)>0 && document.elementFromPoint(rect.left+rect.width/2,rect.top+rect.height/2)===element;
+  })).toBe(true);
   await page.screenshot({path:testInfo.outputPath('landing-middle-paused.png'),animations:'allow'});
   await story.getByRole('button',{name:'Resume story'}).click();
   await expect.poll(active).toBeGreaterThan(0);
@@ -231,4 +235,23 @@ test('native file and connector motion pauses, resumes, completes and cancels wi
   expect(await active()).toBe(0);
   await story.getByRole('button',{name:'Replay story'}).click();
   expect(await story.evaluate((element) => {element.remove(); return element.getAnimations({subtree:true}).length;})).toBe(0);
+});
+
+test('spatial map filenames stay unobscured at narrow, tablet and desktop breakpoints', async ({page},testInfo) => {
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for (const width of [320,768,1024]) {
+    await page.setViewportSize({width,height:740});
+    await page.goto('/');
+    await expect(page.locator('directory-story')).toHaveAttribute('data-state','static');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+    const coverage=await page.locator('.story-tree code').evaluateAll((labels) => labels.map((label) => {
+      const rect=label.getBoundingClientRect();
+      return {name:label.textContent,unobscured:[rect.left+1,rect.left+rect.width/2,rect.right-1].every((x) => {
+        const top=document.elementFromPoint(x,rect.top+rect.height/2);
+        return top !== null && label.contains(top);
+      })};
+    }));
+    for (const label of coverage) expect(label.unobscured,`${width}px ${label.name}`).toBe(true);
+    if (width===768) await page.screenshot({path:testInfo.outputPath('landing-tablet-static.png'),animations:'allow'});
+  }
 });
