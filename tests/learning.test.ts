@@ -3,15 +3,15 @@ import assert from 'node:assert/strict';
 import { catalog } from '../src/content/examples.ts';
 import { explainRename, filterExamples, validateCatalog } from '../src/domain/learning.ts';
 
-test('five original illustrations cover three languages and five project types with source records', () => {
+test('ten original illustrations cover eight language/technology labels with source records', () => {
   const parsed = validateCatalog(catalog);
-  assert.equal(parsed.examples.length, 5);
-  assert.equal(new Set(parsed.examples.map((e) => e.language)).size, 3);
-  assert.equal(new Set(parsed.examples.map((e) => e.projectType)).size, 5);
+  assert.equal(parsed.examples.length, 10);
+  assert.equal(new Set(parsed.examples.map((e) => e.language)).size, 8);
+  assert.equal(new Set(parsed.examples.map((e) => e.projectType)).size, 6);
   for (const example of parsed.examples) assert.equal(example.reference.reuse.mode, 'reference-only');
 });
 test('language and type filters intersect, including an honest empty result', () => {
-  assert.equal(filterExamples(catalog.examples, 'All', 'All').length, 5);
+  assert.equal(filterExamples(catalog.examples, 'All', 'All').length, 10);
   assert.equal(filterExamples(catalog.examples, 'Python', 'All').length, 3);
   assert.equal(filterExamples(catalog.examples, 'Python', 'Library')[0]?.id, 'python-library');
   assert.equal(filterExamples(catalog.examples, 'Go', 'Library').length, 0);
@@ -41,4 +41,18 @@ test('rename model rejects unsafe, colliding and out-of-scope constrained filena
     assert.equal(explainRename('entry', name).valid, false, name);
   assert.equal(explainRename('entry', 'rename.go').valid, false);
   assert.equal(explainRename('test', 'main.go').valid, false);
+});
+
+test('new examples distinguish configured tool defaults from naming choices and include file roles', () => {
+  for (const label of ['Rust','PHP','HTML & CSS','JavaScript','Java']) {
+    const matches=filterExamples(catalog.examples,label,'All');
+    assert.equal(matches.length,1);
+    assert.ok(matches[0]!.fileRoles!.length >= 5);
+    assert.ok(matches[0]!.assumptions!.length >= 3);
+    assert.equal(matches[0]!.reference.kind,'Official documentation');
+    assert.equal(matches[0]!.reference.reuse.checkedAt,'2026-10-14');
+  }
+  assert.equal(filterExamples(catalog.examples,'HTML & CSS','Static website')[0]?.nameKind,'Convention');
+  assert.equal(filterExamples(catalog.examples,'JavaScript','CLI')[0]?.nameKind,'Author choice');
+  assert.equal(filterExamples(catalog.examples,'All','Library').length,2);
 });

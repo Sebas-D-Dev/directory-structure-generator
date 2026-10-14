@@ -6,7 +6,7 @@ async function controlledClock(page: Page) {
   await page.clock.pauseAt(new Date('2026-10-14T12:00:01Z'));
 }
 
-test('opening story is readable immediately, pauses exactly, replays and ends without a loop', async ({page,isMobile}, testInfo) => {
+test('opening story loops calmly over several cycles and preserves pause and focus at the boundary', async ({page,isMobile}, testInfo) => {
   await page.emulateMedia({reducedMotion:'no-preference'});
   await controlledClock(page);
   await page.goto('/');
@@ -17,6 +17,7 @@ test('opening story is readable immediately, pauses exactly, replays and ends wi
   await expect(story).toHaveAttribute('data-beat','0');
   await expect(page.getByRole('heading',{level:1})).toHaveText('See how a projectfits together.');
   for (const label of ['does the work','checks the work','explains the project']) await expect(story.getByText(label,{exact:true})).toBeVisible();
+  await expect(story.locator('.story-takeaway')).toContainText('Names reveal a job.');
   await expect(page.locator('#examples, #astro-flow, #rename-lab, #lesson')).toHaveCount(0);
   const cta = await page.locator('.landing-cta').boundingBox();
   expect(cta!.y + cta!.height).toBeLessThan(page.viewportSize()!.height);
@@ -24,7 +25,7 @@ test('opening story is readable immediately, pauses exactly, replays and ends wi
   await page.clock.runFor(1200);
   await activate();
   await expect(control).toHaveText('Resume story');
-  await page.clock.runFor(10000);
+  await page.clock.runFor(40000);
   await expect(story).toHaveAttribute('data-beat','0');
   await expect(control).toBeFocused();
   await activate();
@@ -33,18 +34,25 @@ test('opening story is readable immediately, pauses exactly, replays and ends wi
   await page.clock.runFor(1);
   await expect(story).toHaveAttribute('data-beat','1');
   await page.clock.runFor(6400);
-  await expect(story).toHaveAttribute('data-state','complete');
-  await expect(control).toHaveText('Replay story');
-  await page.clock.runFor(60000);
   await expect(story).toHaveAttribute('data-beat','3');
-  await page.screenshot({path:testInfo.outputPath('landing-complete.png'),animations:'disabled'});
+  await expect(story).toHaveAttribute('data-state','playing');
+  await page.screenshot({path:testInfo.outputPath('landing-hold.png'),animations:'allow'});
+  await page.clock.runFor(3199);
   await activate();
+  await page.clock.runFor(40000);
+  await expect(story).toHaveAttribute('data-beat','3');
+  await expect(control).toBeFocused();
+  await activate();
+  await page.clock.runFor(1);
   await expect(story).toHaveAttribute('data-beat','0');
+  await expect(control).toHaveText('Pause story');
+  await page.clock.runFor(12800 * 3);
+  await expect(story).toHaveAttribute('data-state','playing');
+  await expect(story).toHaveAttribute('data-beat','0');
+  await expect(control).toBeFocused();
   await activate();
+  await page.clock.runFor(12800 * 3);
   await expect(story).toHaveAttribute('data-state','paused');
-  await activate();
-  await page.clock.runFor(9600);
-  await expect(story).toHaveAttribute('data-state','complete');
 });
 
 test('runtime motion preference and page hiding cancel automatic progression without losing information', async ({page}) => {
@@ -54,10 +62,16 @@ test('runtime motion preference and page hiding cancel automatic progression wit
   const story=page.locator('directory-story');
   await expect(story).toHaveAttribute('data-state','playing');
   await page.clock.runFor(1000);
-  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
+  await page.evaluate(() => {
+    Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
   await expect(story).toHaveAttribute('data-state','paused');
   await page.clock.runFor(20000);
-  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+  await page.evaluate(() => {
+    Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
   await expect(story).toHaveAttribute('data-state','paused');
   await story.getByRole('button',{name:'Resume story'}).press('Enter');
   await page.clock.runFor(2200);
@@ -70,10 +84,10 @@ test('runtime motion preference and page hiding cancel automatic progression wit
   await page.clock.runFor(20000);
   await expect(story).toHaveAttribute('data-beat','3');
   await page.emulateMedia({reducedMotion:'no-preference'});
-  await expect(story).toHaveAttribute('data-state','complete');
+  await expect(story).toHaveAttribute('data-state','paused');
   await page.clock.runFor(20000);
-  await expect(story).toHaveAttribute('data-state','complete');
-  await story.getByRole('button',{name:'Replay story'}).press('Space');
+  await expect(story).toHaveAttribute('data-state','paused');
+  await story.getByRole('button',{name:'Resume story'}).press('Space');
   await expect(story).toHaveAttribute('data-state','playing');
 });
 
@@ -113,8 +127,9 @@ test('320px autoplay preserves first-paint meaning and complete map without docu
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.screenshot({path:testInfo.outputPath('landing-initial-320.png'),animations:'allow'});
   await page.clock.runFor(9600);
-  await expect(page.locator('directory-story')).toHaveAttribute('data-state','complete');
-  await page.screenshot({path:testInfo.outputPath('landing-complete-320.png'),animations:'disabled'});
+  await expect(page.locator('directory-story')).toHaveAttribute('data-state','playing');
+  await expect(page.locator('directory-story')).toHaveAttribute('data-beat','3');
+  await page.screenshot({path:testInfo.outputPath('landing-hold-320.png'),animations:'allow'});
   if(isMobile) await page.locator('.landing-cta').tap(); else await page.locator('.landing-cta').click();
   await expect(page).toHaveURL(/\/examples\/$/);
 });
@@ -178,7 +193,7 @@ test('without JavaScript the complete introduction, route links and default less
     await expect(page.getByRole('button')).toHaveCount(0);
     await page.screenshot({path:testInfo.outputPath('landing-no-js.png'),animations:'disabled'});
     await page.locator('.landing-cta').click();
-    await expect(page.locator('.example-card')).toHaveCount(5);
+    await expect(page.locator('.example-card')).toHaveCount(10);
     await page.getByRole('link',{name:'Follow this page into the browser',exact:false}).click();
     await expect(page.locator('#flow-step-heading')).toHaveText('A source path becomes a route');
     await page.getByText('Lesson assumptions and provenance',{exact:true}).click();
@@ -193,7 +208,8 @@ test('without JavaScript the complete introduction, route links and default less
 });
 
 
-test('native file and connector motion pauses, resumes, completes and cancels with lifecycle changes', async ({page,isMobile}, testInfo) => {
+test('native emphasis and connector repeat on the real timeline, freeze and cancel with lifecycle changes', async ({page,isMobile}, testInfo) => {
+  test.setTimeout(60000);
   if (isMobile) await page.setViewportSize({width:320,height:740});
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.goto('/');
@@ -202,7 +218,7 @@ test('native file and connector motion pauses, resumes, completes and cancels wi
   await expect(story).toHaveAttribute('data-state','playing');
   await expect.poll(active).toBeGreaterThan(0);
   await expect(story).toHaveAttribute('data-beat','1',{timeout:6000});
-  await expect.poll(() => story.locator('.connector-marker').evaluate((element) => Number(element.getAnimations()[0]?.currentTime ?? 0))).toBeGreaterThan(3850);
+  await expect.poll(() => story.locator('.connector-marker').evaluate((element) => Number(element.getAnimations()[0]?.currentTime ?? 0)),{intervals:[50]}).toBeGreaterThan(3850);
   await story.getByRole('button',{name:'Pause story'}).click();
   await expect.poll(active).toBe(0);
   const paused=await story.evaluate((element) => element.getAnimations({subtree:true}).map((animation) => ({time:animation.currentTime,state:animation.playState})));
@@ -217,11 +233,15 @@ test('native file and connector motion pauses, resumes, completes and cancels wi
   await page.screenshot({path:testInfo.outputPath('landing-middle-paused.png'),animations:'allow'});
   await story.getByRole('button',{name:'Resume story'}).click();
   await expect.poll(active).toBeGreaterThan(0);
-  await expect(story).toHaveAttribute('data-state','complete',{timeout:8000});
-  await expect.poll(active).toBe(0);
-  await story.getByRole('button',{name:'Replay story'}).click();
-  await expect(story).toHaveAttribute('data-beat','0');
+  await expect.poll(() => story.locator('.connector-marker').evaluate((element) => Number(element.getAnimations()[0]?.effect?.getComputedTiming().currentIteration ?? 0)),{timeout:15000}).toBeGreaterThanOrEqual(1);
+  await expect(story).toHaveAttribute('data-state','playing');
   await expect.poll(active).toBeGreaterThan(0);
+  await expect.poll(() => story.locator('.connector-marker').evaluate((element) => Number(element.getAnimations()[0]?.currentTime ?? 0)),{timeout:6000,intervals:[50]}).toBeGreaterThan(16650);
+  await story.getByRole('button',{name:'Pause story'}).click();
+  await expect.poll(active).toBe(0);
+  expect(await story.locator('.connector-marker').evaluate((element) => Number(getComputedStyle(element).opacity))).toBeGreaterThan(0);
+  await page.screenshot({path:testInfo.outputPath('landing-second-cycle-paused.png'),animations:'allow'});
+  await story.getByRole('button',{name:'Resume story'}).click();
   await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
   await expect(story).toHaveAttribute('data-state','paused');
   await expect.poll(active).toBe(0);
@@ -231,9 +251,9 @@ test('native file and connector motion pauses, resumes, completes and cancels wi
   await expect(story).toHaveAttribute('data-state','static');
   expect(await story.evaluate((element) => element.getAnimations({subtree:true}).length)).toBe(0);
   await page.emulateMedia({reducedMotion:'no-preference'});
-  await expect(story).toHaveAttribute('data-state','complete');
+  await expect(story).toHaveAttribute('data-state','paused');
   expect(await active()).toBe(0);
-  await story.getByRole('button',{name:'Replay story'}).click();
+  await story.getByRole('button',{name:'Resume story'}).click();
   expect(await story.evaluate((element) => {element.remove(); return element.getAnimations({subtree:true}).length;})).toBe(0);
 });
 

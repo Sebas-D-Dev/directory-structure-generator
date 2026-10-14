@@ -196,8 +196,6 @@
   .landing-copy h1 { font-size:clamp(3rem,5.2vw,4.6rem);line-height:1.05;margin:20px 0; }
   .landing-copy > p { max-width:385px;color:var(--muted);font-size:1.02rem; }
   .landing-cta { margin-top:25px;gap:26px; }
-  .landing-takeaway { grid-column:1/-1;border-top:1px solid var(--line);padding-top:24px;font-size:.86rem;color:var(--ink); }
-  .landing-takeaway span { color:var(--muted); }
   directory-story { display:block;min-width:0;isolation:isolate; }
   .directory-stage { position:relative;margin:0;padding:20px 25px 15px;background:#f0edf5;border:1px solid #d7cde4;border-radius:22px;box-shadow:0 15px 35px #37234c10; }
   .directory-stage::before { content:'';position:absolute;inset:8px -7px -8px 7px;background:#e7e6d7;border:1px solid #dcdcc8;border-radius:22px;transform:rotate(1.2deg);z-index:-1; }
@@ -236,6 +234,9 @@
   #story-arrow path { fill:none;stroke:#5b9582;stroke-width:1.2; }
   .connector-marker { fill:#285f4e;stroke:#fff;stroke-width:2;opacity:0; }
   .story-edge-label { position:absolute;left:66%;top:8%;font-size:.67rem;color:#3d6b5a;background:#f0edf5;padding:0 6px; }
+  .story-takeaway { font-size:.8rem;line-height:1.5;margin-top:16px;color:#514361; }
+  .story-takeaway strong { display:block;color:#423052; }
+  .story-file,.story-guide { outline:2px solid transparent;outline-offset:2px; }
   .story-previews { display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #d9d2e1;padding-top:13px;margin-top:18px; }
   .project-silhouette { display:flex;gap:10px;align-items:center;min-width:0; }
   .project-silhouette > svg { width:66px;height:42px;flex:none;fill:none;stroke:#9b8cad;stroke-width:1.4; }
@@ -244,9 +245,6 @@
   .web-frame { fill:#fffdfd; } .web-block { fill:#c6b5df;stroke:none; } .web-piece { fill:#e2d7ef; }
   .project-silhouette .data-input { fill:#e3eee7;stroke:#8ba493; } .project-silhouette .data-step { fill:#d5e5dc;stroke:#8ba493; } .project-silhouette .data-report { fill:#fffaf0;stroke:#ac9d77; }
   .story-map-note { color:#71637f;font-size:.64rem;line-height:1.5;margin-top:11px; }
-  directory-story[data-beat="0"] .story-source { outline:1px solid #8c6bac;outline-offset:3px; }
-  directory-story[data-beat="1"] .story-checks { outline:1px solid #598d79;outline-offset:3px; }
-  directory-story[data-beat="2"] .story-guide { outline:1px solid #b09a61;outline-offset:3px; }
   .story-controls[hidden] { display:none; }
   .story-control { min-height:44px;border:1px solid #bfb2cd;border-radius:8px;background:#f8f5fc;color:#513b6d;padding:8px 12px;font-size:.7rem;white-space:nowrap; }
   .story-control:hover { background:#e7def2; }
@@ -263,9 +261,9 @@
   @media(max-width:700px) {
     .multipage .site-header { padding:12px 0;align-items:center;gap:12px; }
     .multipage .site-header nav { gap:16px; }
-    .landing { grid-template-columns:1fr;padding-top:25px;gap:20px; }
+    .landing { grid-template-columns:1fr;padding-top:20px;gap:16px; }
     .landing-copy > .eyebrow { font-size:.57rem; }
-    .landing-copy h1 { font-size:2.65rem;line-height:1.02;margin:12px 0; }
+    .landing-copy h1 { font-size:2.65rem;line-height:1.02;margin:10px 0; }
     .landing-copy > p { font-size:.88rem;max-width:340px;line-height:1.5; }
     .landing-cta { margin-top:16px; }
     .directory-stage { padding:14px 16px 12px;border-radius:15px; }
@@ -285,14 +283,14 @@
     .story-guide { padding:9px 12px;gap:9px;width:70%;left:3%; }
     .guide-glyph { height:25px;width:20px; }
     .story-edge-label { font-size:.61rem;left:64%;top:5%; }
-    .story-previews { padding-top:10px;margin-top:13px;gap:10px; }
+    .story-takeaway { font-size:.7rem;line-height:1.4;margin-top:8px; }
+    .story-previews { padding-top:10px;margin-top:8px;gap:10px; }
     .project-silhouette > svg { width:46px;height:34px; }
     .project-silhouette > span { font-size:.66rem; }
     .project-silhouette small { font-size:.57rem; }
-    .story-map-note { font-size:.61rem;margin-top:8px; }
+    .story-map-note { font-size:.61rem;margin-top:6px; }
     .story-control { padding:6px 9px;font-size:.64rem; }
     .story-playback,.story-static-note { font-size:.65rem;margin-top:13px; }
-    .landing-takeaway { font-size:.78rem;padding-top:18px; }
     .multipage footer { align-items:flex-start;gap:12px; }
     .multipage footer nav { justify-content:flex-start; }
     .page-intro { padding-top:24px; }
@@ -300,7 +298,7 @@
   }
   @media(max-width:360px) {
     .landing-copy h1 { font-size:2.3rem; }
-    .landing { gap:18px; }
+    .landing { gap:14px; }
     .directory-stage { padding:12px; }
     .directory-stage .eyebrow { font-size:.52rem; }
     .story-source { padding:10px; }

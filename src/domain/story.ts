@@ -1,11 +1,18 @@
 export const storyBeatMs = 3200;
-export const storyBeatCount = 3;
-export type StoryState = 'playing' | 'paused' | 'complete' | 'static';
+export const storyBeatCount = 4;
+export const storyCycleMs = storyBeatMs * storyBeatCount;
+export type StoryState = 'playing' | 'paused' | 'static';
 export function nextStoryBeat(current: number): number {
-  return Math.min(storyBeatCount, Math.max(0, current) + 1);
+  return (Math.max(0, Math.floor(current)) + 1) % storyBeatCount;
 }
 export function storyControlLabel(state: StoryState): string {
-  return state === 'playing' ? 'Pause story' : state === 'paused' ? 'Resume story' : 'Replay story';
+  return state === 'playing' ? 'Pause story' : 'Resume story';
+}
+
+/** Advance to the current phase after a delayed callback, without replaying missed beats. */
+export function advanceStoryClock(beat: number, remaining: number, elapsed: number) {
+  const position = beat * storyBeatMs + storyBeatMs - remaining + Math.max(0, elapsed);
+  return {beat:Math.floor(position / storyBeatMs) % storyBeatCount, remaining:storyBeatMs - position % storyBeatMs};
 }
 
 /** Points along the independently drawn checks → source schematic connector. */

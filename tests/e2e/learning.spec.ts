@@ -3,27 +3,27 @@ import {test, expect} from '@playwright/test';
 test('collection filters intersect, update counts, expose provenance and recover from empty state', async ({page}) => {
   await page.goto('/examples/');
   const gallery = page.locator('#examples');
-  await expect(gallery.locator('.example-card')).toHaveCount(5);
-  await gallery.getByLabel('Language', {exact:true}).selectOption('Python');
+  await expect(gallery.locator('.example-card')).toHaveCount(10);
+  await gallery.getByLabel('Language / technology', {exact:true}).selectOption('Python');
   await expect(gallery.locator('.example-card')).toHaveCount(3);
   await gallery.getByLabel('Project type', {exact:true}).selectOption('Library');
   await expect(gallery.locator('.example-card')).toHaveCount(1);
-  await expect(gallery.getByLabel('Language', {exact:true}).getByRole('option', {name:'All · 1 example', exact:true})).toBeAttached();
-  await expect(gallery.getByRole('status')).toContainText('1 of 5');
+  await expect(gallery.getByLabel('Language / technology', {exact:true}).getByRole('option', {name:'All · 2 examples', exact:true})).toBeAttached();
+  await expect(gallery.getByRole('status')).toContainText('1 of 10');
   await gallery.getByText('Consequences and sources', {exact:true}).click();
   await expect(gallery.getByText('Package discovery still needs', {exact:false})).toBeVisible();
   await gallery.getByText('Specific-use provenance record', {exact:true}).click();
   await expect(gallery.getByText('Link and factual reference only;', {exact:false})).toBeVisible();
-  await gallery.getByLabel('Language', {exact:true}).selectOption('Go');
+  await gallery.getByLabel('Language / technology', {exact:true}).selectOption('Go');
   await expect(gallery.getByRole('heading', {name:'No example matches both filters'})).toBeVisible();
   await gallery.getByRole('button', {name:'Show all examples'}).focus();
   await page.keyboard.press('Enter');
-  await expect(gallery.getByLabel('Language', {exact:true})).toBeFocused();
-  await expect(gallery.locator('.example-card')).toHaveCount(5);
-  await gallery.getByLabel('Language', {exact:true}).selectOption('TypeScript');
+  await expect(gallery.getByLabel('Language / technology', {exact:true})).toBeFocused();
+  await expect(gallery.locator('.example-card')).toHaveCount(10);
+  await gallery.getByLabel('Language / technology', {exact:true}).selectOption('TypeScript');
   await gallery.getByRole('button', {name:'Clear filters'}).click();
   await expect(gallery.getByRole('button', {name:'Clear filters'})).toBeDisabled();
-  await expect(gallery.getByLabel('Language', {exact:true})).toBeFocused();
+  await expect(gallery.getByLabel('Language / technology', {exact:true})).toBeFocused();
 });
 
 test('rename lab previews, cancels, applies, undoes and resets both semantic cases', async ({page}) => {
@@ -129,4 +129,28 @@ test('pointer controls work at 320px, including touch on mobile and a long valid
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.keyboard.press('Home');
   await page.locator('#examples').screenshot({path:test.info().outputPath('narrow-collection.png'),animations:'disabled'});
+});
+
+test('new language and technology cards remain substantive, source-backed and filterable', async ({page,isMobile},testInfo) => {
+  await page.goto('/examples/');
+  const gallery=page.locator('#examples');
+  for (const language of ['Rust','PHP','HTML & CSS','JavaScript','Java']) {
+    await gallery.getByLabel('Language / technology',{exact:true}).selectOption(language);
+    await expect(gallery.locator('.example-card')).toHaveCount(1);
+    await expect(gallery.getByRole('status')).toContainText('1 of 10');
+    const card=gallery.locator('.example-card');
+    await expect(card.locator('.mini-tree')).toBeVisible();
+    await expect(card.locator('.naming-note')).not.toBeEmpty();
+    const disclosure=card.getByText('Consequences and sources',{exact:true});
+    if(isMobile) await disclosure.tap(); else await disclosure.click();
+    await expect(card.getByRole('heading',{name:'If this changes'})).toBeVisible();
+    await expect(card.locator('.card-sources a').first()).toHaveAttribute('href',/^https:\/\//);
+    await card.getByText('Specific-use provenance record',{exact:true}).press('Enter');
+    await expect(card.getByText('No third-party code, prose, tree, artwork or logo reproduced',{exact:false})).toBeVisible();
+    await card.screenshot({path:testInfo.outputPath(`card-${language.replace(/[^a-z]/gi,'').toLowerCase()}.png`),animations:'disabled'});
+  }
+  await page.getByRole('navigation',{name:'Footer navigation'}).getByRole('link',{name:'Naming Lab',exact:true}).click();
+  await expect(page.getByRole('heading',{level:1,name:'Naming Lab'})).toBeVisible();
+  await expect(page.getByText('Available now: two Go filename experiments',{exact:false})).toBeVisible();
+  await expect(page.getByText('Those experiments are not available yet',{exact:false})).toBeVisible();
 });

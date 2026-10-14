@@ -3,8 +3,8 @@ import { sourceSchema } from './contracts.ts';
 import { validateSegment } from './validate.ts';
 
 const text = z.string().trim().min(1).max(2000);
-export const languages = ['Go', 'TypeScript', 'Python'] as const;
-export const projectTypes = ['CLI', 'Web app', 'Backend API', 'Data analysis', 'Library'] as const;
+export const languages = ['Go', 'TypeScript', 'Python', 'Rust', 'PHP', 'HTML & CSS', 'JavaScript', 'Java'] as const;
+export const projectTypes = ['CLI', 'Web app', 'Backend API', 'Data analysis', 'Library', 'Static website'] as const;
 const reuseSchema = z.strictObject({
   mode: z.literal('reference-only'),
   material: z.literal('No third-party code, prose, tree, artwork or logo reproduced'),
@@ -19,12 +19,13 @@ export const exampleSchema = z.strictObject({
   language: z.enum(languages), projectType: z.enum(projectTypes), framework: text,
   purpose: text, tree: z.array(text).min(2).max(12), name: text, nameKind: z.enum(['Tool rule', 'Convention', 'Author choice']),
   reason: text, consequence: text, tradeoff: text,
+  fileRoles: z.array(text).min(1).max(12).optional(), assumptions: z.array(text).min(1).max(10).optional(),
   origin: z.literal('Original teaching illustration'), status: z.literal('Illustrative; not a runnable template'),
   sourceIds: z.array(z.string()).min(1),
-  reference: z.strictObject({title: text, url: sourceSchema.shape.url, kind: z.enum(['Official example', 'Official template', 'Maintainer template']), reuse: reuseSchema}),
+  reference: z.strictObject({title: text, url: sourceSchema.shape.url, kind: z.enum(['Official example', 'Official template', 'Maintainer template', 'Official documentation']), reuse: reuseSchema}),
 });
 export const catalogSchema = z.strictObject({
-  version: z.literal('2026.10-visual.1'), sources: z.array(sourceSchema).min(1), examples: z.array(exampleSchema).min(1),
+  version: z.literal('2026.10-visual.2'), sources: z.array(sourceSchema).min(1), examples: z.array(exampleSchema).min(1),
 });
 export type Catalog = z.infer<typeof catalogSchema>;
 export type Example = z.infer<typeof exampleSchema>;

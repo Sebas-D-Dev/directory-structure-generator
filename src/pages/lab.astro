@@ -2,9 +2,10 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import RenameLab from '../components/RenameLab';
 ---
-<SiteLayout title="Optional Go naming lab">
-  <div class="page-intro"><a href="/examples/">← All examples</a><h1>Try a naming decision.</h1><p>An optional exercise for a closer look at Go’s filename rules.</p></div>
+<SiteLayout title="Naming Lab">
+  <div class="page-intro"><a href="/examples/">← All examples</a><h1>Naming Lab</h1><p>Change one assumption. Predict the consequence. Trace the rule behind it.</p><p class="small">Available now: two Go filename experiments, covering entry points and test discovery. These are explanatory models, not a code runner.</p></div>
   <noscript><p class="notice">The default entry-file diagram, assumptions and sources are readable. Previewing a rename and changing cases needs JavaScript.</p></noscript>
   <RenameLab client:load />
+  <section class="scope-card" aria-labelledby="lab-next-heading"><h2 id="lab-next-heading">Room for deeper questions.</h2><p>Future lab topics could explore import boundaries, configured entry points and how a project grows. Those experiments are not available yet; each will need a defined scenario, evidence and limits.</p></section>
   <p class="page-next">This lab resets on reload and has no export. Explore and export a complete explanatory tree in the <a href="/examples/go/">Go layout guide</a>.</p>
 </SiteLayout>

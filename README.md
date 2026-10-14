@@ -6,12 +6,12 @@ A guest-first educational guide to **why files and folders belong where they do*
 
 ## What is implemented
 
-- A static-first, layered project illustration with settling file tiles, a schematic checks connection, compact Web/Data previews, pause/resume/replay, and complete reduced-motion/no-JavaScript alternatives
-- Separate routes for examples, Astro and Go explanations, the optional naming lab, and sources; known earlier section links forward to their new location
+- A static-first, layered project illustration with a calm repeating emphasis loop, a schematic checks connection, compact Web/Data previews, persistent pause/resume, and complete reduced-motion/no-JavaScript alternatives
+- Separate routes for examples, Astro and Go explanations, Naming Lab, and sources; known earlier section links forward to their new location
 
 - Plain-language descriptions of six project capabilities, with honest feedback for combinations outside the authored curriculum
-- Five original teaching cards: Go CLI, Astro web app, FastAPI backend, Python data analysis, and Python library
-- Language/project-type filters with result counts, reset and empty-state recovery
+- Ten original teaching cards: Go CLI, Astro web app, FastAPI backend, Python data analysis and library, Rust/Cargo CLI, PHP/Composer CLI, static HTML & CSS website, JavaScript/Node CLI, and Java/Maven library
+- Language/technology and project-type filters with result counts, reset and empty-state recovery
 - A deeper Astro page journey with six explained files, five build/delivery steps, and static-versus-hydrated React comparison
 - A two-case Go rename-and-explain simulation with preview, cancel, apply and undo
 - One deeper illustrative Go photo-renaming CLI lesson with two layout options

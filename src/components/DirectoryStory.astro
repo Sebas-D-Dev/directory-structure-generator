@@ -14,23 +14,25 @@
       </ul>
       <span class="sr-only">The checks group checks the source behavior. This is an illustrative relationship, not an automatic connection made by a folder.</span>
     </div>
+    <p class="story-takeaway"><strong>Names reveal a job.</strong> <span>Some are required; others are choices.</span></p>
     <div class="story-previews" aria-label="Other illustrative project shapes">
       <div class="project-silhouette"><svg viewBox="0 0 74 44" aria-hidden="true"><rect class="web-frame" x="2" y="3" width="44" height="33" rx="4" /><path d="M3 12h42" /><circle cx="8" cy="8" r="1" /><circle cx="13" cy="8" r="1" /><rect class="web-block" x="10" y="18" width="24" height="4" rx="1" /><rect class="web-block" x="10" y="26" width="16" height="3" rx="1" /><path d="M47 22h8" /><rect class="web-piece" x="55" y="14" width="16" height="12" rx="2" /><rect class="web-piece" x="51" y="29" width="16" height="11" rx="2" /></svg><span>Web<small>pages + components</small></span></div>
       <div class="project-silhouette"><svg viewBox="0 0 74 44" aria-hidden="true"><path d="M14 22h46" /><rect class="data-input" x="1" y="11" width="15" height="22" rx="3" /><path d="M5 17h7M5 22h7M5 27h7" /><path class="data-step" d="M27 22l11-11 11 11-11 11z" /><rect class="data-report" x="59" y="6" width="14" height="32" rx="2" /><path d="M63 30v-8M67 30V13M71 30V18" /></svg><span>Data<small>inputs → reports</small></span></div>
     </div>
     <p class="story-map-note">Illustrative links. Folders don’t wire files together.</p>
   </figure>
-  <p class="story-playback">A short story, played once.</p>
+  <p class="story-playback">A calm loop through code, checks, and guidance.</p>
   <p class="story-static-note">The complete map. Conventions depend on the project’s tools.</p>
 </directory-story>
 
 <script>
-  import { nextStoryBeat, storyConnectorPoints, storyBeatMs, storyBeatCount, storyControlLabel, type StoryState } from '../domain/story';
+  import { advanceStoryClock, storyConnectorPoints, storyBeatMs, storyCycleMs, storyControlLabel, type StoryState } from '../domain/story';
   class DirectoryStory extends HTMLElement {
     private timer: ReturnType<typeof setTimeout> | undefined;
     private motion: Animation[] = [];
     private remaining = storyBeatMs;
     private started = 0;
+    private elapsed = 0;
     private beat = 0;
     private state: StoryState = 'static';
     private media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -63,18 +65,18 @@
       this.dataset.beat = String(this.beat);
       if (this.controls) this.controls.hidden = this.state === 'static';
       if (this.control) this.control.textContent = storyControlLabel(this.state);
-      if (this.playback) this.playback.textContent = this.state === 'complete' ? 'Code, checks, and guidance together.' : this.state === 'paused' ? 'Paused. The map stays readable.' : ['Source files do the work.', 'Tests check that work.', 'README explains the project.'][this.beat]!;
+      if (this.playback) this.playback.textContent = this.state === 'paused' ? 'Paused. Resume whenever you like.' : ['Source files do the work.', 'Tests check that work.', 'README explains the project.', 'Code, checks, and guidance together.'][this.beat]!;
     }
     private schedule() {
       clearTimeout(this.timer);
       this.started = performance.now();
       this.timer = setTimeout(() => {
-        this.beat = nextStoryBeat(this.beat);
-        this.remaining = storyBeatMs;
-        if (this.beat === storyBeatCount) {
-          this.state = 'complete';
-          this.motion.forEach((animation) => animation.finish());
-        }
+        const duration = performance.now() - this.started;
+        this.elapsed += duration;
+        const phase = advanceStoryClock(this.beat, this.remaining, duration);
+        this.beat = phase.beat; this.remaining = phase.remaining;
+        // A delayed visible-tab callback skips missed phases once; it never replays a backlog.
+        this.motion.forEach((animation) => {animation.currentTime = this.elapsed;});
         this.render();
         if (this.state === 'playing') this.schedule();
       }, this.remaining);
@@ -85,19 +87,33 @@
     }
     private createMotion() {
       if (typeof Element.prototype.animate !== 'function') return;
-      const settle = (selector: string, delay: number) => this.querySelectorAll(selector).forEach((element, index) => {
-        const animation = element.animate([{transform:'translateY(9px)'}, {transform:'translateY(0)'}], {duration:850, delay:delay + index * 110, easing:'cubic-bezier(.2,.7,.25,1)', fill:'backwards'});
+      // Repeat only quiet emphasis: files and labels never travel or reset between cycles.
+      const emphasize = (selector: string, beat: number, color: string) => this.querySelectorAll(selector).forEach((element) => {
+        const start = beat * storyBeatMs / storyCycleMs;
+        const animation = element.animate([
+          {outlineColor:'transparent',offset:0},
+          {outlineColor:'transparent',offset:start},
+          {outlineColor:color,offset:start + .05},
+          {outlineColor:color,offset:start + .15},
+          {outlineColor:'transparent',offset:start + .22},
+          {outlineColor:'transparent',offset:1},
+        ], {duration:storyCycleMs,iterations:Infinity,easing:'linear'});
         animation.pause(); this.motion.push(animation);
       });
-      settle('.story-source .story-file', 0);
-      settle('.story-checks .story-file', storyBeatMs);
-      settle('.story-guide', storyBeatMs * 2);
+      emphasize('.story-source .story-file', 0, '#8c6bac');
+      emphasize('.story-checks .story-file', 1, '#598d79');
+      emphasize('.story-guide', 2, '#b09a61');
       const marker = this.querySelector('.connector-marker');
       if (marker) {
-        const animation = marker.animate(storyConnectorPoints().map(({x,y,opacity,offset}) => ({transform:`translate(${x}px, ${y}px)`,opacity,offset})), {duration:1200,delay:storyBeatMs + 300,fill:'none'});
+        const points = storyConnectorPoints().map(({x,y,opacity,offset}) => ({transform:`translate(${x}px, ${y}px)`,opacity,offset:(storyBeatMs + 300 + offset * 1200) / storyCycleMs}));
+        const animation = marker.animate([
+          {...points[0],opacity:0,offset:0}, ...points, {...points.at(-1),opacity:0,offset:1},
+        ], {duration:storyCycleMs,iterations:Infinity});
         animation.pause(); this.motion.push(animation);
       }
+      this.motion.forEach((animation) => {animation.currentTime = this.elapsed;});
     }
+
     private play() {
       if (this.media.matches) { this.showStatic(); return; }
       if (!this.motion.length) this.createMotion();
@@ -108,16 +124,18 @@
       if (this.state !== 'playing') return;
       clearTimeout(this.timer);
       this.motion.forEach((animation) => {if (animation.playState === 'running') animation.pause();});
-      this.remaining = Math.max(0, this.remaining - (performance.now() - this.started));
+      const duration = performance.now() - this.started;
+      this.elapsed += duration;
+      const phase = advanceStoryClock(this.beat, this.remaining, duration);
+      this.beat = phase.beat; this.remaining = phase.remaining;
       this.state = 'paused'; this.render();
     };
     private toggle = () => {
       if (this.state === 'playing') { this.pause(); return; }
-      if (this.state === 'complete') { this.beat = 0; this.remaining = storyBeatMs; this.cancelMotion(); }
       this.play();
     };
     private showStatic() {
-      clearTimeout(this.timer); this.cancelMotion(); this.beat = storyBeatCount; this.state = 'static'; this.render();
+      clearTimeout(this.timer); this.cancelMotion(); this.beat = 3; this.elapsed = 3 * storyBeatMs; this.remaining = storyBeatMs; this.state = 'static'; this.render();
     }
     private preferenceChanged = () => {
       if (this.media.matches) {
@@ -125,7 +143,7 @@
         this.showStatic();
         if (hadFocus) this.querySelector<HTMLElement>('figure')?.focus({preventScroll:true});
       }
-      else { this.state = 'complete'; this.render(); }
+      else { this.state = 'paused'; this.render(); }
     };
     private visibilityChanged = () => { if (document.hidden) this.pause(); };
   }

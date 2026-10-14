@@ -29,7 +29,7 @@ export default function RenameLab() {
     setCurrent(previous); setCandidate(previous); setPrevious(null); setPreview(null); setMessage('Restored the previous filename in the model.'); resultHeading.current?.focus();
   }
   return <section className="rename-lab" id="rename-lab" aria-labelledby="rename-heading">
-    <div className="section-heading"><span className="step">GO / OPTIONAL NAMING LAB</span><h2 id="rename-heading">A new name.<br /><em>The same behavior?</em></h2><p>Two Go filenames, two different rules. Change one label and trace what the tool will still recognize.</p></div>
+    <div className="section-heading"><span className="step">GO / NAMING LAB</span><h2 id="rename-heading">A new name.<br /><em>The same behavior?</em></h2><p>Two Go filenames, two different rules. Change one label and trace what the tool will still recognize.</p></div>
     <div className="lab-shell">
       <div className="lab-controls"><span className="eyebrow">RENAME & EXPLAIN · GO</span><fieldset><legend>Choose a case</legend>{(Object.keys(renameCases) as RenameCase[]).map((id) => <label className="case-option" key={id}><input type="radio" name="rename-case" checked={kind === id} onChange={() => choose(id)} /><span><strong>{renameCases[id].label}</strong><small>{renameCases[id].original} · {renameCases[id].kind}</small></span></label>)}</fieldset>
         <label className="filename-label" htmlFor="rename-filename">Try a new filename</label><input id="rename-filename" ref={input} value={candidate} maxLength={64} spellCheck={false} autoComplete="off" aria-describedby="rename-help rename-validation" aria-invalid={!validation.valid} onChange={(event) => {setCandidate(event.target.value); setPreview(null);}} />
